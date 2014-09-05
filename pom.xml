@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>eu.fusepoolp3</groupId>
+  <artifactId>p3-silkdedup</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  <name>Fusepool P3 Deduplication</name>
+  <packaging>pom</packaging>
+  <description>
+  A service to deduplicate entities within a RDF graphs. A transformer receives
+   an RDF graph as input and returns a set of owl:sameAs statements if similar entities are found
+  in the knowledge base.
+  </description>
+  <modules>
+    <module>deduptransformer</module>
+    <module>silk</module>
+  </modules>
+</project>
