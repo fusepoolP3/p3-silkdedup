@@ -8,8 +8,7 @@
   <packaging>pom</packaging>
   <description>
   A service to deduplicate entities within a RDF graphs. A transformer receives
-   an RDF graph as input and returns a set of owl:sameAs statements if similar entities are found
-  in the knowledge base.
+   an RDF graph as input and returns a set of owl:sameAs statements if similar entities are found.
   </description>
   <modules>
     <module>deduptransformer</module>
