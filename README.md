@@ -34,4 +34,4 @@ The silk.jar file can be used as a dependency in the project using the coordinat
       &lt;groupId&gt;de.fuberlin.wiwiss.silk&lt;/groupId&gt;  
       &lt;artifactId&gt;silk&lt;/artifactId&gt;  
       &lt;version&gt;2.6.0&lt;/version&gt;  
-    &lt;/dependency&gt;  
+    </dependency>    
