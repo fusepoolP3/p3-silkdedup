@@ -14,7 +14,7 @@ To test the application open a new shell, go to the deduptransformer/src/test/re
 
 curl -X POST -T testfoaf.ttl http://localhost:7100
 
-The file testfoaf.ttl contains different representation of the same entity Barack Obama. The result of the interlinking process, a set of owl:sameAs statements, will be sent back to the client.
+The file testfoaf.ttl contains different representations of the same entity Barack Obama. The result of the interlinking process, a set of owl:sameAs statements, will be sent back to the client.
 
 The SILK version used is 2.6.0 that is not available from the Maven repository. In order to use it in Maven it must be dowloaded from the project webste
 
