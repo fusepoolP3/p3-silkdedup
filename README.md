@@ -7,7 +7,7 @@ The apllication enables a user to send an http POST request with RDF data to fin
 
 mvn exec:java
 
-The deduplication task is based on a set of rules written in the SILK Link Specification Language. The rules currently implemented can be used to disambiguate description of entities of type foaf:Person using the properties 
+The deduplication task is based on a set of rules written in the SILK Link Specification Language. The rules currently implemented can be used to disambiguate descriptions of entities of type foaf:Person using the properties 
 foaf:givenName and foaf:givenName where foaf is a prefix for the namespace http://xmlns.com/foaf/0.1/
 
 The SILK version used is 2.6.0 that is not available from the Maven repository. In order to use it in Maven it must be dowloaded from the project webste
