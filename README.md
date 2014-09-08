@@ -8,7 +8,7 @@ The apllication enables a user to send an http POST request with RDF data to fin
 mvn exec:java
 
 The deduplication task is based on a set of rules written in the SILK Link Specification Language. The rules currently implemented can be used to disambiguate descriptions of entities of type foaf:Person using the properties 
-foaf:givenName and foaf:givenName where foaf is a prefix for the namespace http://xmlns.com/foaf/0.1/
+foaf:givenName and foaf:familyName where foaf is a prefix for the namespace http://xmlns.com/foaf/0.1/
 
 To test the application open a new shell, go to the deduptransformer/src/test/resources/ folder and run the following command 
 
