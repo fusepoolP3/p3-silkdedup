@@ -10,6 +10,10 @@ mvn exec:java
 The deduplication task is based on a set of rules written in the SILK Link Specification Language. The rules currently implemented can be used to disambiguate descriptions of entities of type foaf:Person using the properties 
 foaf:givenName and foaf:givenName where foaf is a prefix for the namespace http://xmlns.com/foaf/0.1/
 
+To test the application open a new shell, go to the deduptransformer/src/test/resources/ folder and run the following command 
+
+curl -X POST -T testfoaf.ttl http://localhost:7100
+
 The SILK version used is 2.6.0 that is not available from the Maven repository. In order to use it in Maven it must be dowloaded from the project webste
 
 http://wifo5-03.informatik.uni-mannheim.de/bizer/silk/
