@@ -3,7 +3,9 @@ Fusepool P3-SilkDedup
 
 A deduplication transformer. Implements the requirements in FP-106.
 
-The apllication enables a user to send an http POST request with RDF data to find duplicates within it. 
+The apllication enables a user to send an http POST request with RDF data to find duplicates within it. To start the application move to the p3-silkdedup/deduptransformer/ folder and run the command
+
+mvn exec:java
 
 The SILK version used is 2.6.0 that is not available from the Maven repository. In order to use it in Maven it must be dowloaded from the project webste
 
