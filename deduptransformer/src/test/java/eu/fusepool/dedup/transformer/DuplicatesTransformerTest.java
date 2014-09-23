@@ -11,12 +11,19 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.util.Iterator;
 
+import org.apache.clerezza.rdf.core.BNode;
+import org.apache.clerezza.rdf.core.Graph;
+import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
+import org.apache.clerezza.rdf.core.serializedform.Parser;
+import org.apache.clerezza.rdf.ontologies.OWL;
+import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
 import org.hamcrest.core.StringContains;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,8 +36,8 @@ import eu.fusepool.p3.transformer.server.TransformerServer;
 public class DuplicatesTransformerTest {
 	
 	final String SILK_CONFIG_FILE = "src/test/resources/silk-config-file.xml";
-	final String SOURCE_RDF_FILE = "src/main/resources/inputdata.ttl";
-	final String TARGET_RDF_FILE = "src/main/resources/inputdata.ttl";
+	final String SOURCE_RDF_FILE = "src/test/resources/testfoaf.ttl";
+	final String TARGET_RDF_FILE = "src/test/resources/testfoaf.ttl";
 	private String baseUri;
 	private byte[] rdfData;
 	
@@ -58,15 +65,22 @@ public class DuplicatesTransformerTest {
                 .get();
     }
     
+    
 	@Test
 	public void testSilk() throws IOException {
 		
-		//Response response = 
+		Response response = 
         RestAssured.given().header("Accept", "text/turtle")
                 .contentType("text/turtle;charset=UTF-8")
                 .content(rdfData)
-                .expect().statusCode(HttpStatus.SC_OK).content(new StringContains("hello")).header("Content-Type", "text/turtle").when()
+                .expect().statusCode(HttpStatus.SC_OK).content(new StringContains("http://www.w3.org/2002/07/owl#sameAs")).header("Content-Type", "text/turtle").when()
                 .post(baseUri);
+        
+        /*
+		Graph graph = Parser.getInstance().parse(response.getBody().asInputStream(), "text/turtle");
+        Iterator<Triple> typeTriples = graph.filter(null, OWL.sameAs, null);
+        Assert.assertTrue("No equivalent entities found", typeTriples.hasNext());
+        */
 	}
 	
 	public static int findFreePort() {

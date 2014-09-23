@@ -77,11 +77,9 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
         inputRdf.close();
         outRdf.close();
           
-        
         // interlink entities
         Silk.executeFile(configFile, null, 1, true);
         log.info("Interlinking task completed.");
-        
         
         // returns the result to the client
         return parseResult(SILK_RESULT_FILE);
