@@ -32,14 +32,14 @@ public class DuplicatesTransformerTest {
 	final String SOURCE_RDF_FILE = "src/main/resources/inputdata.ttl";
 	final String TARGET_RDF_FILE = "src/main/resources/inputdata.ttl";
 	private String baseUri;
-	private String rdfData;
+	private byte[] rdfData;
 	
 	@Before
     public void setUp() throws Exception {
 		
 		File rdfFile = new File(SOURCE_RDF_FILE);
 		InputStream in = new FileInputStream(rdfFile);
-        rdfData = IOUtils.toString(in);
+        rdfData = IOUtils.toByteArray(in);
         in.close();
         
         final int port = findFreePort();
