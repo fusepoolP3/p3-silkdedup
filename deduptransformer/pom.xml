@@ -39,6 +39,17 @@
              <groupId>eu.fusepool.p3.ext.de.fuberlin.wiwiss.silk</groupId>
              <artifactId>silk-singlemachine</artifactId>
              <version>2.6.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>asm</groupId>
+                    <artifactId>asm</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>4.0</version>
         </dependency>
         <dependency>
             <artifactId>wymiwyg-commons-core</artifactId>
@@ -66,7 +77,21 @@
             <artifactId>rest-assured</artifactId>
             <version>2.3.1</version>
             <scope>test</scope>
+            <!-- exclusion needed if silk turns out not to be happy with asm 4
+            <exclusions>
+                <exclusion>
+                    <groupId>org.codehaus.groovy</groupId>
+                    <artifactId>groovy</artifactId>
+                </exclusion>
+            </exclusions> -->
         </dependency>
+        <!-- this wouold work with asm 3.3 in case silk doesn't work with asm 4<dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>2.2.1</version>
+            <scope>test</scope>
+        </dependency>
+        -->
         <dependency>
             <groupId>eu.fusepool.p3</groupId>
             <artifactId>transformer-implementation-library</artifactId>

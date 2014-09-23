@@ -44,15 +44,25 @@ public class DuplicatesTransformerTest {
         
         final int port = findFreePort();
         baseUri = "http://localhost:"+port+"/";
+        RestAssured.baseURI = "http://localhost:"+port+"/";
         TransformerServer server = new TransformerServer(port);
         server.start(new DuplicatesTransformer(SILK_CONFIG_FILE));
     }
 	
 	
+    @Test
+    public void turtleOnGet() {
+        //Nothing specific here
+        Response response = RestAssured.given().header("Accept", "text/turtle")
+                .expect().statusCode(HttpStatus.SC_OK).header("Content-Type", "text/turtle").when()
+                .get();
+    }
+    
 	@Test
 	public void testSilk() throws IOException {
 		
-		Response response = RestAssured.given().header("Accept", "text/turtle")
+		//Response response = 
+        RestAssured.given().header("Accept", "text/turtle")
                 .contentType("text/turtle;charset=UTF-8")
                 .content(rdfData)
                 .expect().statusCode(HttpStatus.SC_OK).content(new StringContains("hello")).header("Content-Type", "text/turtle").when()
