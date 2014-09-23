@@ -19,19 +19,3 @@ To test the application open a new shell, go to the deduptransformer/src/test/re
     curl -X POST -T testfoaf.ttl http://localhost:7100
 
 The file testfoaf.ttl contains different representations of the same entity Barack Obama. The result of the interlinking process, a set of owl:sameAs statements, will be sent back to the client.
-
-The SILK version used is 2.6.0 that is not available from the Maven repository. In order to use it in Maven it must be dowloaded from the project webste
-
-http://wifo5-03.informatik.uni-mannheim.de/bizer/silk/
-
-then unzip the file and import the file silk.jar into your local Maven repository using the command
-
-    mvn install:install-file -Dfile=&lt; path to silk.jar &gt; -DgroupId=de.fuberlin.wiwiss.silk -DartifactId=silk -Dversion=2.6.0 -Dpackaging=jar
-
-The silk.jar file can be used as a dependency in the project using the coordinates
-
-    <dependency>  
-      <groupId>de.fuberlin.wiwiss.silk</groupId>  
-      <artifactId>silk</artifactId>    
-      <version>2.6.0</version>    
-    </dependency>    
