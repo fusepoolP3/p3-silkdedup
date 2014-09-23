@@ -9,6 +9,12 @@
   <name>Fusepool P3 Silkdedup </name>
   <dependencies>
        <dependency>
+          <groupId>org.apache.jena</groupId>
+          <artifactId>apache-jena-libs</artifactId>
+          <type>pom</type>
+          <version>2.12.0</version>
+       </dependency>
+       <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
             <version>9.2.0.RC0</version>
@@ -29,6 +35,11 @@
             <version>0.12</version>
             <!-- only in tests and only at runtime -->
             <scope>test</scope>
+        </dependency>
+        <dependency>
+             <groupId>eu.fusepool.p3.ext.de.fuberlin.wiwiss.silk</groupId>
+             <artifactId>silk-singlemachine</artifactId>
+             <version>2.6.0</version>
         </dependency>
         <dependency>
             <artifactId>wymiwyg-commons-core</artifactId>
@@ -61,22 +72,12 @@
         <dependency>
             <groupId>eu.fusepool.p3</groupId>
             <artifactId>transformer-implementation-library</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
-        <dependency>
-           <groupId>eu.fusepoolp3</groupId>
-           <artifactId>silk</artifactId>
-           <version>0.1-SNAPSHOT</version>
-        </dependency>
-		<dependency>
-			<groupId>de.fuberlin.wiwiss.silk</groupId>
-			<artifactId>silk</artifactId>
-			<version>2.6.0</version>
-		</dependency>
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
-            <version>2.11.2</version>
+            <version>2.10.3</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
