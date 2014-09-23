@@ -49,8 +49,13 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
 	final String INPUT_RDF_FILE = "src/main/resources/inputdata.ttl";
 	final String SILK_RESULT_FILE = "src/main/resources/accepted_links.nt";
 	final String BASE_URI = "http://example.org/";
+	private String configFileName = null;
 	
 	private static final Logger log = LoggerFactory.getLogger(DuplicatesTransformer.class);
+	
+	public DuplicatesTransformer(String configFileName) {
+    	this.configFileName = configFileName;
+    }
 
     @Override
     public Set<MimeType> getSupportedInputFormats() {
@@ -155,6 +160,10 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	public String getConfigFileName() {
+    	return configFileName;
+    }
 
     
 }

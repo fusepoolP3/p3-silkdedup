@@ -34,9 +34,10 @@ public class Main {
     }
 
     private static void start(Arguments arguments) throws Exception {
+    	final String SILK_CONFIG_FILE = "src/main/resources/silk-config-file.xml";
         TransformerServer server = new TransformerServer(arguments.getPort());
         
-        server.start(new DuplicatesTransformer());
+        server.start(new DuplicatesTransformer(SILK_CONFIG_FILE));
        
         server.join();
     }
