@@ -69,7 +69,7 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
 	}
 
     protected TripleCollection findDuplicates(InputStream inputRdf) throws IOException {
-        File configFile = new File(SILK_CONFIG_FILE);
+        File configFile = new File(getConfigFileName());
         
         File rdfFile = new File(INPUT_RDF_FILE);
         FileOutputStream outRdf = new FileOutputStream(rdfFile);
