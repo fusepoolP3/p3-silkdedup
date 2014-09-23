@@ -6,7 +6,6 @@
 
 package eu.fusepool.dedup.transformer;
 
-import de.fuberlin.wiwiss.silk.config.LinkingConfig;
 import eu.fusepool.p3.transformer.HttpRequestEntity;
 import eu.fusepool.p3.transformer.RdfGeneratingTransformer;
 import de.fuberlin.wiwiss.silk.Silk;
@@ -28,15 +27,10 @@ import org.apache.clerezza.rdf.core.MGraph;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
-import org.apache.clerezza.rdf.core.access.LockableMGraph;
-import org.apache.clerezza.rdf.core.access.TcManager;
-import org.apache.clerezza.rdf.core.impl.SimpleGraph;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
-import org.apache.clerezza.rdf.core.serializedform.ParsingProvider;
-import org.apache.clerezza.rdf.core.serializedform.SerializingProvider;
+import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
-import org.apache.clerezza.rdf.jena.parser.JenaParserProvider;
 import org.apache.clerezza.rdf.ontologies.OWL;
 import org.apache.clerezza.rdf.utils.smushing.SameAsSmusher;
 import org.apache.commons.io.IOUtils;
@@ -101,7 +95,7 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
      */
     protected TripleCollection smushData(InputStream inputRdfData, TripleCollection duplicates){
     	MGraph inputGraph = new SimpleMGraph();
-    	ParsingProvider parser = new JenaParserProvider();
+    	Parser parser = Parser.getInstance();
     	parser.parse(inputGraph, inputRdfData, SupportedFormat.TURTLE, null);
     	SameAsSmusher smusher = new SameAsSmusher() {
     		@Override 
