@@ -33,8 +33,7 @@
             <groupId>org.apache.clerezza</groupId>
             <artifactId>rdf.jena.parser</artifactId>
             <version>0.12</version>
-            <!-- only in tests and only at runtime -->
-            <scope>test</scope>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
              <groupId>eu.fusepool.p3.ext.de.fuberlin.wiwiss.silk</groupId>
@@ -56,7 +55,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.6.6</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
