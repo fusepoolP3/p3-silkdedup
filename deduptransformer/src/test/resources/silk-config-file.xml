@@ -1,0 +1,55 @@
+<Silk>
+	<Prefixes>
+		<Prefix namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#" id="rdf"></Prefix>
+		<Prefix namespace="http://www.w3.org/2002/07/owl#" id="owl"></Prefix>
+		<Prefix namespace="http://xmlns.com/foaf/0.1/" id="foaf"></Prefix>
+		<Prefix namespace="http://www.w3.org/2000/01/rdf-schema#" id="rdfs"></Prefix>		
+	</Prefixes>
+	<DataSources>
+		<DataSource type="file" id="source">
+			<Param name="file" value="/home/luigi/projects/fusepoolp3/p3-silkdedup/deduptransformerr/src/test/resources/inputdata.ttl"></Param>
+			<Param name="format" value="TURTLE"></Param>
+		</DataSource>
+		<DataSource type="file" id="target">
+			<Param name="file" value="/home/luigi/projects/fusepoolp3/p3-silkdedup/deduptransformer/src/test/resources/inputdata.ttl"></Param>
+			<Param name="format" value="TURTLE"></Param>
+		</DataSource>
+	</DataSources>
+	<Blocking blocks="100" />
+	<Interlinks>
+		<Interlink id="person">
+			<LinkType>owl:sameAs</LinkType>
+			<SourceDataset dataSource="source" var="person_s">
+				<RestrictTo>
+                   ?person_s rdf:type foaf:Person .
+				</RestrictTo>
+			</SourceDataset>
+			<TargetDataset dataSource="target" var="person_t">
+				<RestrictTo>
+				   ?person_t rdf:type foaf:Person .
+				</RestrictTo>
+			</TargetDataset>
+			<LinkageRule>
+				<Aggregate type="average">
+					<Compare metric="jaroWinkler">
+						<Input path="?person_s/foaf:givenName"></Input>
+						<Input path="?person_t/foaf:givenName"></Input>
+					</Compare>
+                    <Compare metric="jaroWinkler">
+                       <Input path="?person_s/foaf:familyName"></Input>
+                       <Input path="?person_t/foaf:familyName"></Input>
+                    </Compare>
+				</Aggregate>
+			</LinkageRule>
+			<Filter threshold="0.90"></Filter>
+			<Outputs>
+				<Output type="file" minConfidence="0.95">
+					<Param name="file"
+						value="/home/luigi/projects/fusepoolp3/p3-silkdedup/deduptransformer/src/main/resources/accepted_links.nt" />
+					<Param name="format" value="ntriples" />
+				</Output>
+			
+			</Outputs>
+		</Interlink>
+	</Interlinks>
+</Silk>
