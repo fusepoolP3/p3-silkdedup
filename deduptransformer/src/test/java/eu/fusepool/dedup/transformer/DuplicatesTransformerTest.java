@@ -1,7 +1,5 @@
 package eu.fusepool.dedup.transformer;
 
-
-
 import static org.junit.Assert.*;
 
 import java.io.File;
@@ -32,31 +30,32 @@ import com.jayway.restassured.response.Response;
 
 import eu.fusepool.dedup.transformer.DuplicatesTransformer;
 import eu.fusepool.p3.transformer.server.TransformerServer;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 
 public class DuplicatesTransformerTest {
-	
-	final String SOURCE_RDF_FILE = "src/test/resources/testfoaf.ttl";
-	//final String TARGET_RDF_FILE = "src/test/resources/testfoaf.ttl";
-	private String baseUri;
-	private byte[] rdfData;
-	
-	@Before
+
+    //final String SOURCE_RDF_FILE = "src/main/resources/testfoaf.ttl";
+    //final String TARGET_RDF_FILE = "src/test/resources/testfoaf.ttl";
+    private String baseUri;
+    private byte[] rdfData;
+
+    @Before
     public void setUp() throws Exception {
-		
-		File rdfFile = new File(SOURCE_RDF_FILE);
-		InputStream in = new FileInputStream(rdfFile);
+        File rdfFile = inputStreamToFile(getClass().getResourceAsStream("testfoaf.ttl"));
+        //File rdfFile = new File(SOURCE_RDF_FILE);
+        InputStream in = new FileInputStream(rdfFile);
         rdfData = IOUtils.toByteArray(in);
         in.close();
-        
-        
+
         final int port = findFreePort();
-        baseUri = "http://localhost:"+port+"/";
-        RestAssured.baseURI = "http://localhost:"+port+"/";
+        baseUri = "http://localhost:" + port + "/";
+        RestAssured.baseURI = "http://localhost:" + port + "/";
         TransformerServer server = new TransformerServer(port);
         server.start(new DuplicatesTransformer());
     }
-	
-	
+
     @Test
     public void turtleOnGet() {
         //Nothing specific here
@@ -64,26 +63,25 @@ public class DuplicatesTransformerTest {
                 .expect().statusCode(HttpStatus.SC_OK).header("Content-Type", "text/turtle").when()
                 .get();
     }
-    
-    
-	@Test
-	public void testSilk() throws IOException {
-		
-		Response response = 
-        RestAssured.given().header("Accept", "text/turtle")
+
+    @Test
+    public void testSilk() throws IOException {
+
+        Response response
+                = RestAssured.given().header("Accept", "text/turtle")
                 .contentType("text/turtle;charset=UTF-8")
                 .content(rdfData)
                 .expect().statusCode(HttpStatus.SC_OK).content(new StringContains("http://www.w3.org/2002/07/owl#sameAs")).header("Content-Type", "text/turtle").when()
                 .post(baseUri);
-        
+
         /*
-		Graph graph = Parser.getInstance().parse(response.getBody().asInputStream(), "text/turtle");
-        Iterator<Triple> typeTriples = graph.filter(null, OWL.sameAs, null);
-        Assert.assertTrue("No equivalent entities found", typeTriples.hasNext());
-        */
-	}
-	
-	public static int findFreePort() {
+         Graph graph = Parser.getInstance().parse(response.getBody().asInputStream(), "text/turtle");
+         Iterator<Triple> typeTriples = graph.filter(null, OWL.sameAs, null);
+         Assert.assertTrue("No equivalent entities found", typeTriples.hasNext());
+         */
+    }
+
+    public static int findFreePort() {
         int port = 0;
         try (ServerSocket server = new ServerSocket(0);) {
             port = server.getLocalPort();
@@ -91,6 +89,20 @@ public class DuplicatesTransformerTest {
             throw new RuntimeException("unable to find a free port");
         }
         return port;
+    }
+    
+    public File inputStreamToFile(InputStream in) throws IOException {
+        OutputStream out = null;
+        try {
+            File temp = File.createTempFile("temp-", ".txt");
+            out = new FileOutputStream(temp);
+            IOUtils.copy(in, out);
+            return temp;
+        } catch (FileNotFoundException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            out.close();
+        }
     }
 
 }

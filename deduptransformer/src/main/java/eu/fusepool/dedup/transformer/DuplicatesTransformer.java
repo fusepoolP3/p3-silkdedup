@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 public class DuplicatesTransformer extends RdfGeneratingTransformer {
 
     final String SILK_CONFIG_FILE = "src/main/resources/silk-config-file.xml";
-    final String SILK_RESULT_FILE = "src/main/resources/accepted_links.nt";
+    //final String SILK_RESULT_FILE = "src/main/resources/accepted_links.nt";
     final String BASE_URI = "http://example.org/";
 
 
@@ -69,13 +69,18 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
         return duplicates;
     }
 
+    /**
+     * Finds duplicates in a graph. The Silk configuration file is updated with the current source and output file paths. 
+     * The updated configuration file and the input RDF data and the output files are stored in the /tmp/ folder.
+     * @param inputRdf
+     * @return
+     * @throws IOException
+     */
     protected TripleCollection findDuplicates(InputStream inputRdf) throws IOException {
         File configFile = inputStreamToFile(getClass().getResourceAsStream("silk-config-file.xml"));
-
-        
         File rdfFile = File.createTempFile("input", ".ttl");
         File outFile = File.createTempFile("output", ".nt");
-        SilkConfigFileParser parser = new SilkConfigFileParser(SILK_CONFIG_FILE);
+        SilkConfigFileParser parser = new SilkConfigFileParser(configFile.getAbsolutePath());
 		parser.updateOutputFile(outFile.getAbsolutePath());
 		parser.updateSourceFile(rdfFile.getAbsolutePath());
 		parser.saveChanges();
@@ -153,7 +158,7 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     public File inputStreamToFile(InputStream in) throws IOException {
         OutputStream out = null;
         try {
-            File temp = File.createTempFile("lkj", ".txt");
+            File temp = File.createTempFile("temp-", ".txt");
             out = new FileOutputStream(temp);
             IOUtils.copy(in, out);
             return temp;
