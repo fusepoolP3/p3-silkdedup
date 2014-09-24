@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><Silk>
+	<Prefixes>
+		<Prefix id="rdf" namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+		<Prefix id="owl" namespace="http://www.w3.org/2002/07/owl#"/>
+		<Prefix id="foaf" namespace="http://xmlns.com/foaf/0.1/"/>
+		<Prefix id="rdfs" namespace="http://www.w3.org/2000/01/rdf-schema#"/>		
+	</Prefixes>
+	<DataSources>
+		<DataSource id="source" type="file">
+			<Param name="file" value="inputdata.ttl"/>
+			<Param name="format" value="TURTLE"/>
+		</DataSource>
+		<DataSource id="target" type="file">
+			<Param name="file" value="inputdata.ttl"/>
+			<Param name="format" value="TURTLE"/>
+		</DataSource>
+	</DataSources>
+	<Blocking blocks="100"/>
+	<Interlinks>
+		<Interlink id="person">
+			<LinkType>owl:sameAs</LinkType>
+			<SourceDataset dataSource="source" var="person_s">
+				<RestrictTo>
+                   ?person_s rdf:type foaf:Person .
+				</RestrictTo>
+			</SourceDataset>
+			<TargetDataset dataSource="target" var="person_t">
+				<RestrictTo>
+				   ?person_t rdf:type foaf:Person .
+				</RestrictTo>
+			</TargetDataset>
+			<LinkageRule>
+				<Aggregate type="average">
+					<Compare metric="jaroWinkler">
+						<Input path="?person_s/foaf:givenName"/>
+						<Input path="?person_t/foaf:givenName"/>
+					</Compare>
+                    <Compare metric="jaroWinkler">
+                       <Input path="?person_s/foaf:familyName"/>
+                       <Input path="?person_t/foaf:familyName"/>
+                    </Compare>
+				</Aggregate>
+			</LinkageRule>
+			<Filter threshold="0.90"/>
+			<Outputs>
+				<Output minConfidence="0.95" type="file">
+					<Param name="file" value="accepted_links.nt"/>
+					<Param name="format" value="ntriples"/>
+				</Output>
+			
+			</Outputs>
+		</Interlink>
+	</Interlinks>
+</Silk>

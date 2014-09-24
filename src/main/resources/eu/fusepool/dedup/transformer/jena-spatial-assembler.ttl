@@ -1,0 +1,61 @@
+## Example of a TDB dataset with a spatial index and Fuseki service.
+
+@prefix :        <http://localhost/jena_example/#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix spatial: <http://jena.apache.org/spatial#> .
+@prefix fuseki:  <http://jena.apache.org/fuseki#> .
+
+#Fuseki
+[] rdf:type fuseki:Server ;
+fuseki:services (
+  <#service_spatial_tdb>
+) .
+
+<#service_spatial_tdb> rdf:type fuseki:Service ;
+    rdfs:label                      "TDB/spatial service" ;
+    fuseki:name                     "fusepoolp3" ;
+    fuseki:serviceQuery             "query" ;
+    fuseki:serviceQuery             "sparql" ;
+    fuseki:serviceUpdate            "update" ;
+    fuseki:serviceUpload            "upload" ;
+    fuseki:serviceReadGraphStore    "get" ;
+    fuseki:serviceReadWriteGraphStore    "data" ;
+    fuseki:dataset                  :spatial_dataset ;
+    .
+
+
+# TDB
+[] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
+tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
+tdb:GraphTDB    rdfs:subClassOf  ja:Model .
+
+# Spatial
+[] ja:loadClass "org.apache.jena.query.spatial.SpatialQuery" .
+spatial:SpatialDataset  rdfs:subClassOf  ja:RDFDataset .
+spatial:SpatialIndexLucene  rdfs:subClassOf   spatial:SpatialIndex .
+
+
+:spatial_dataset rdf:type spatial:SpatialDataset ;
+    spatial:dataset <#fusepoolp3> ;
+    spatial:index <#indexLucene> ;
+    .
+
+<#fusepoolp3> rdf:type tdb:DatasetTDB ;
+    tdb:location "/home/luigi/jena/apache-jena-2.11.1/Store/fusepoolp3" ;
+    .
+
+<#indexLucene> a spatial:SpatialIndexLucene ;
+    spatial:directory <file:/home/luigi/jena/apache-jena-2.11.1/lucene> ;
+    spatial:definition <#definition> ;
+    .
+
+<#definition> a spatial:EntityDefinition ;
+    spatial:entityField "uri" ;
+    spatial:geoField "geo" ;
+    # custom spatial context factory for Well Known Text (WKT)
+    spatial:spatialContextFactory "com.spatial4j.core.context.jts.JtsSpatialContextFactory"
+    .
+
