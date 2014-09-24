@@ -7,11 +7,11 @@
 	</Prefixes>
 	<DataSources>
 		<DataSource id="source" type="file">
-			<Param name="file" value="/home/luigi/projects/fusepoolp3/p3-silkdedup/deduptransformer/src/test/resources/testfoaf.ttl"/>
+			<Param name="file" value="C:\Users\Reto\projects\git\p3\p3-silkdedup\deduptransformer/src/test/resources/testfoaf.ttl"/>
 			<Param name="format" value="TURTLE"/>
 		</DataSource>
 		<DataSource id="target" type="file">
-			<Param name="file" value="/home/luigi/projects/fusepoolp3/p3-silkdedup/deduptransformer/src/test/resources/testfoaf.ttl"/>
+			<Param name="file" value="C:\Users\Reto\projects\git\p3\p3-silkdedup\deduptransformer/src/test/resources/testfoaf.ttl"/>
 			<Param name="format" value="TURTLE"/>
 		</DataSource>
 	</DataSources>
@@ -44,7 +44,7 @@
 			<Filter threshold="0.90"/>
 			<Outputs>
 				<Output minConfidence="0.95" type="file">
-					<Param name="file" value="/home/luigi/projects/fusepoolp3/p3-silkdedup/deduptransformer/src/test/resources/accepted_links.nt"/>
+					<Param name="file" value="C:\Users\Reto\projects\git\p3\p3-silkdedup\deduptransformer/src/test/resources/accepted_links.nt"/>
 					<Param name="format" value="ntriples"/>
 				</Output>
 			

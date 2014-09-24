@@ -35,7 +35,6 @@ import eu.fusepool.p3.transformer.server.TransformerServer;
 
 public class DuplicatesTransformerTest {
 	
-	final String SILK_CONFIG_FILE = "src/test/resources/silk-test-config-file.xml";
 	final String SOURCE_RDF_FILE = "src/test/resources/testfoaf.ttl";
 	//final String TARGET_RDF_FILE = "src/test/resources/testfoaf.ttl";
 	private String baseUri;
@@ -49,16 +48,12 @@ public class DuplicatesTransformerTest {
         rdfData = IOUtils.toByteArray(in);
         in.close();
         
-        SilkConfigFileParser parser = new SilkConfigFileParser(SILK_CONFIG_FILE);
-		parser.updateOutputFile("src/test/resources/accepted_links.nt");
-		parser.updateSourceFile("src/test/resources/testfoaf.ttl");
-		parser.saveChanges();
         
         final int port = findFreePort();
         baseUri = "http://localhost:"+port+"/";
         RestAssured.baseURI = "http://localhost:"+port+"/";
         TransformerServer server = new TransformerServer(port);
-        server.start(new DuplicatesTransformer(SILK_CONFIG_FILE));
+        server.start(new DuplicatesTransformer());
     }
 	
 	

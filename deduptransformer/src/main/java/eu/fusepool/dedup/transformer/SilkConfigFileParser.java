@@ -23,23 +23,34 @@ import org.w3c.dom.NodeList;
 import org.wymiwyg.commons.util.arguments.ArgumentHandler;
 
 import eu.fusepool.p3.transformer.sample.Arguments;
+import java.util.logging.Level;
+import javax.xml.transform.TransformerException;
+import org.xml.sax.SAXException;
 
 public class SilkConfigFileParser {
 	
 	Document doc = null;
 	String configFile = "";
 	
-	public SilkConfigFileParser(String configFile) throws Exception{
-		this.configFile = configFile;
-		File fXmlFile = new File(configFile);
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		doc = dBuilder.parse(fXmlFile);
-		doc.getDocumentElement().normalize();
+	public SilkConfigFileParser(String configFile) {
+            try {
+                this.configFile = configFile;
+                File fXmlFile = new File(configFile);
+                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                doc = dBuilder.parse(fXmlFile);
+                doc.getDocumentElement().normalize();
+            } catch (ParserConfigurationException ex) {
+                throw new RuntimeException(ex);
+            } catch (SAXException ex) {
+                throw new RuntimeException(ex);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
 	}
 	
 	
-	public void updateSourceFile(String sourceFileName) throws Exception {
+	public void updateSourceFile(String sourceFileName) throws IOException  {
 		NodeList nList = doc.getElementsByTagName("DataSource");
 		for(int i = 0; i < nList.getLength(); i++){
 			Node dataSourceNode = nList.item(i);
@@ -71,7 +82,7 @@ public class SilkConfigFileParser {
     	NodeList nList = doc.getElementsByTagName("DataSource");
 	}
 	
-	public void updateOutputFile(String acceptFileName) throws Exception { 	
+	public void updateOutputFile(String acceptFileName) throws IOException  { 	
 		NodeList nList = doc.getElementsByTagName("Output");
 		for (int temp = 0; temp < nList.getLength(); temp++) {
 			Node outputNode = nList.item(temp);
@@ -102,13 +113,19 @@ public class SilkConfigFileParser {
 	    
 	}
 	
-	public void saveChanges() throws Exception {
-		// write the content into xml file
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		Transformer transformer = transformerFactory.newTransformer();
-		DOMSource source = new DOMSource(doc);
-		StreamResult result = new StreamResult(new File(configFile));
-		transformer.transform(source, result);
+	public void saveChanges()  {
+            try {
+                // write the content into xml file
+                TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                Transformer transformer = transformerFactory.newTransformer();
+                DOMSource source = new DOMSource(doc);
+                StreamResult result = new StreamResult(new File(configFile));
+                transformer.transform(source, result);
+            } catch (TransformerConfigurationException ex) {
+                throw new RuntimeException(ex);
+            } catch (TransformerException ex) {
+                throw new RuntimeException(ex);
+            }
 	}
 	
 	private String getCurrentDir() throws IOException {
