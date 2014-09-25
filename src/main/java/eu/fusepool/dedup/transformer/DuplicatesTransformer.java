@@ -42,9 +42,7 @@ import org.slf4j.LoggerFactory;
 
 public class DuplicatesTransformer extends RdfGeneratingTransformer {
 
-    final String SILK_CONFIG_FILE = "src/main/resources/silk-config-file.xml";
     final String BASE_URI = "http://example.org/";
-
 
     private static final Logger log = LoggerFactory.getLogger(DuplicatesTransformer.class);
 
@@ -79,10 +77,12 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
         File configFile = FileUtil.inputStreamToFile(getClass().getResourceAsStream("silk-config-file.xml"));
         File rdfFile = File.createTempFile("input-rdf-", ".ttl");
         File outFile = File.createTempFile("output-", ".nt");
+        //update the config file with the paths of the input and output files
         SilkConfigFileParser parser = new SilkConfigFileParser(configFile.getAbsolutePath());
 		parser.updateOutputFile(outFile.getAbsolutePath());
 		parser.updateSourceFile(rdfFile.getAbsolutePath());
 		parser.saveChanges();
+		//save the data coming from the stream into a temp file 
         FileOutputStream outRdf = new FileOutputStream(rdfFile);
         IOUtils.copy(inputRdf, outRdf);
         inputRdf.close();
