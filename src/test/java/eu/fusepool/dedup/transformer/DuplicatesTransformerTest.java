@@ -44,7 +44,6 @@ public class DuplicatesTransformerTest {
     @Before
     public void setUp() throws Exception {
         File rdfFile = FileUtil.inputStreamToFile(getClass().getResourceAsStream("testfoaf.ttl"));
-        //File rdfFile = new File(SOURCE_RDF_FILE);
         InputStream in = new FileInputStream(rdfFile);
         rdfData = IOUtils.toByteArray(in);
         in.close();
