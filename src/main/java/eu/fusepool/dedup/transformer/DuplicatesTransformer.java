@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -43,6 +44,11 @@ import org.slf4j.LoggerFactory;
 public class DuplicatesTransformer extends RdfGeneratingTransformer {
 
     final String BASE_URI = "http://example.org/";
+    final String TURTLE_MIME_TYPE = "text/turtle";
+    final String RDF_MIME_TYPE = "application/rdf+xml";
+    String silkDatasourceFormat = "text/turtle";
+    String supportedFormat;
+    MimeType mimeType;
 
     private static final Logger log = LoggerFactory.getLogger(DuplicatesTransformer.class);
 
@@ -52,8 +58,10 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     @Override
     public Set<MimeType> getSupportedInputFormats() {
         try {
-            MimeType mimeType = new MimeType("text/plain;charset=UTF-8");
-            return Collections.singleton(mimeType);
+              Set<MimeType> mimeSet = new HashSet<MimeType>();
+              mimeSet.add(new MimeType(TURTLE_MIME_TYPE + ";charset=UTF-8"));
+              mimeSet.add(new MimeType(RDF_MIME_TYPE + ";charset=UTF-8"));
+              return Collections.unmodifiableSet(mimeSet);
         } catch (MimeTypeParseException ex) {
             throw new RuntimeException(ex);
         }
@@ -61,6 +69,9 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
 
     @Override
     protected TripleCollection generateRdf(HttpRequestEntity entity) throws IOException {
+    	mimeType = entity.getType();
+    	supportedFormat = entity.getType().getBaseType();
+    	silkDatasourceFormat = mimeType.getBaseType().startsWith(RDF_MIME_TYPE) ? "RDF/XML" : "TURTLE"; 
         final InputStream inputRdfData = entity.getData();
         TripleCollection duplicates = findDuplicates(inputRdfData);
         return duplicates;
@@ -74,13 +85,14 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
      * @throws IOException
      */
     protected TripleCollection findDuplicates(InputStream inputRdf) throws IOException {
-        File configFile = FileUtil.inputStreamToFile(getClass().getResourceAsStream("silk-config-file.xml"));
-        File rdfFile = File.createTempFile("input-rdf-", ".ttl");
+        File configFile = FileUtil.inputStreamToFile(getClass().getResourceAsStream("silk-config-file.xml"), "silk-config-", ".xml");
+        File rdfFile = File.createTempFile("input-rdf-", ".rdf");
         File outFile = File.createTempFile("output-", ".nt");
         //update the config file with the paths of the input and output files
         SilkConfigFileParser parser = new SilkConfigFileParser(configFile.getAbsolutePath());
 		parser.updateOutputFile(outFile.getAbsolutePath());
-		parser.updateSourceFile(rdfFile.getAbsolutePath());
+		parser.updateSourceDataSourceFile(rdfFile.getAbsolutePath(), silkDatasourceFormat);
+		parser.updateTargetDataSourceFile(rdfFile.getAbsolutePath(), silkDatasourceFormat);
 		parser.saveChanges();
 		//save the data coming from the stream into a temp file 
         FileOutputStream outRdf = new FileOutputStream(rdfFile);
@@ -108,7 +120,7 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     protected TripleCollection smushData(InputStream inputRdfData, TripleCollection duplicates) {
         MGraph inputGraph = new SimpleMGraph();
         Parser parser = Parser.getInstance();
-        parser.parse(inputGraph, inputRdfData, SupportedFormat.TURTLE, null);
+        parser.parse(inputGraph, inputRdfData, supportedFormat, null);
         SameAsSmusher smusher = new SameAsSmusher() {
             @Override
             protected UriRef getPreferedIri(Set<UriRef> uriRefs) {

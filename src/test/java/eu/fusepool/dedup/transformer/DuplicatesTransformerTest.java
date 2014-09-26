@@ -16,6 +16,7 @@ import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TripleCollection;
 import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
+import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.clerezza.rdf.ontologies.OWL;
 import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.commons.io.IOUtils;
@@ -30,23 +31,29 @@ import com.jayway.restassured.response.Response;
 
 import eu.fusepool.dedup.transformer.DuplicatesTransformer;
 import eu.fusepool.p3.transformer.server.TransformerServer;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 public class DuplicatesTransformerTest {
 
-    //final String SOURCE_RDF_FILE = "src/main/resources/testfoaf.ttl";
-    //final String TARGET_RDF_FILE = "src/test/resources/testfoaf.ttl";
     private String baseUri;
     private byte[] rdfData;
+    private byte[] ttlData;
 
     @Before
     public void setUp() throws Exception {
-        File rdfFile = FileUtil.inputStreamToFile(getClass().getResourceAsStream("testfoaf.ttl"));
-        InputStream in = new FileInputStream(rdfFile);
-        rdfData = IOUtils.toByteArray(in);
-        in.close();
+        File ttlFile = FileUtil.inputStreamToFile(getClass().getResourceAsStream("testfoaf.ttl"), "test-", ".ttl");
+        InputStream inttl = new FileInputStream(ttlFile);
+        ttlData = IOUtils.toByteArray(inttl);
+        inttl.close();
+        
+        File rdfFile = FileUtil.inputStreamToFile(getClass().getResourceAsStream("testfoaf.rdf"), "test-", ".rdf");
+        InputStream inrdf = new FileInputStream(rdfFile);
+        rdfData = IOUtils.toByteArray(inrdf);
+        inrdf.close();
+        
 
         final int port = findFreePort();
         baseUri = "http://localhost:" + port + "/";
@@ -62,15 +69,25 @@ public class DuplicatesTransformerTest {
                 .expect().statusCode(HttpStatus.SC_OK).header("Content-Type", "text/turtle").when()
                 .get();
     }
+    
+    /*
+    @Test
+    public void rdfOnGet() {
+        //Nothing specific here
+        Response response = RestAssured.given().header("Accept", "text/turtle")
+                .expect().statusCode(HttpStatus.SC_OK).header("Content-Type", "application/rdf+xml").when()
+                .get();
+    }
+    */
 
     @Test
-    public void testSilk() throws IOException {
+    public void testSilkRdfTurtle() throws IOException {
 
         Response response
                 = RestAssured.given().header("Accept", "text/turtle")
                 .contentType("text/turtle;charset=UTF-8")
-                .content(rdfData)
-                .expect().statusCode(HttpStatus.SC_OK).content(new StringContains("http://www.w3.org/2002/07/owl#sameAs")).header("Content-Type", "text/turtle").when()
+                .content(ttlData)
+                .expect().statusCode(HttpStatus.SC_OK).content(new StringContains("http://www.w3.org/2002/07/owl#sameAs")).header("Content-Type", SupportedFormat.TURTLE).when()
                 .post(baseUri);
 
         
@@ -79,6 +96,25 @@ public class DuplicatesTransformerTest {
          Assert.assertTrue("No equivalent entities found", typeTriples.hasNext());
          
     }
+    
+    
+    @Test
+    public void testSilkRdfXml() throws IOException {
+
+        Response response
+                = RestAssured.given().header("Accept", "application/rdf+xml")
+                .contentType("application/rdf+xml;charset=UTF-8")
+                .content(rdfData)
+                .expect().statusCode(HttpStatus.SC_OK).content(new StringContains(OWL.sameAs.getUnicodeString())).header("Content-Type", SupportedFormat.TURTLE).when()
+                .post(baseUri);
+
+        
+         Graph graph = Parser.getInstance().parse(response.getBody().asInputStream(), SupportedFormat.TURTLE);
+         Iterator<Triple> typeTriples = graph.filter(null, OWL.sameAs, null);
+         Assert.assertTrue("No equivalent entities found", typeTriples.hasNext());
+         
+    }
+    
 
     public static int findFreePort() {
         int port = 0;

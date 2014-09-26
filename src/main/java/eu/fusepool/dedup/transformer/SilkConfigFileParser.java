@@ -56,38 +56,83 @@ public class SilkConfigFileParser {
         }
     }
 
-    public void updateSourceFile(String sourceFileName) throws IOException {
+    public void updateTargetDataSourceFile(String sourceFileName, String format) throws IOException {
         NodeList nList = doc.getElementsByTagName("DataSource");
         for (int i = 0; i < nList.getLength(); i++) {
             Node dataSourceNode = nList.item(i);
             if (dataSourceNode.getNodeType() == Node.ELEMENT_NODE) {
-                Element dataSourceElement = (Element) dataSourceNode;
-                if (dataSourceElement.getAttribute("type").equals("file")) {
-                    NodeList paramNodes = dataSourceElement.getChildNodes();
-                    for (int j = 0; j < paramNodes.getLength(); j++) {
-                        Node paramNode = paramNodes.item(j);
-                        //System.out.println("\nCurrent Element :" + paramNode.getNodeName());
-                        if (paramNode.getNodeType() == Node.ELEMENT_NODE) {
-                            Element paramElem = (Element) paramNode;
-                            if (paramElem.getAttribute("name").equals("file")) {
-                                String currentSourceFileName = paramElem.getAttribute("value");
-                                System.out.println("Source file name: " + currentSourceFileName);
-                                Attr fileName = paramElem.getAttributeNode("value");
-                                String updatedSourceFileName = sourceFileName;
-                                fileName.setTextContent(updatedSourceFileName);
-                                System.out.println("New source file: " + updatedSourceFileName);
-                            }
-
-                        }
-
-                    }
+                Element targetDataSourceElement = (Element) dataSourceNode;
+                String dataSourceId = targetDataSourceElement.getAttribute("id");
+                if(dataSourceId.equals("target")){
+	                if (targetDataSourceElement.getAttribute("type").equals("file")) {
+	                    NodeList paramNodes = targetDataSourceElement.getChildNodes();
+	                    for (int j = 0; j < paramNodes.getLength(); j++) {
+	                        Node paramNode = paramNodes.item(j);
+	                        //System.out.println("\nCurrent Element :" + paramNode.getNodeName());
+	                        if (paramNode.getNodeType() == Node.ELEMENT_NODE) {
+	                            Element paramElem = (Element) paramNode;              
+	                            if (paramElem.getAttribute("name").equals("file")) {
+	                                String currentSourceFileName = paramElem.getAttribute("value");
+	                                System.out.println("Target source file name: " + currentSourceFileName);
+	                                Attr fileName = paramElem.getAttributeNode("value");
+	                                String updatedSourceFileName = sourceFileName;
+	                                fileName.setTextContent(updatedSourceFileName);
+	                                System.out.println("New target source file: " + updatedSourceFileName);
+	                            }
+	                            if (paramElem.getAttribute("name").equals("format")) {
+	                                String currentFormat = paramElem.getAttribute("value");
+	                                System.out.println("Target source format: " + currentFormat);
+	                                Attr formatAttr = paramElem.getAttributeNode("value");
+	                                formatAttr.setTextContent(format);	                                	                               
+	                                System.out.println("New target source format: " + format);
+	                            }
+	
+	                        }
+	
+	                    }
+	                }
                 }
             }
         }
     }
-
-    public void updateTargetFile(String targetFileName) {
+    public void updateSourceDataSourceFile(String sourceFileName, String format) throws IOException {
         NodeList nList = doc.getElementsByTagName("DataSource");
+        for (int i = 0; i < nList.getLength(); i++) {
+            Node sourceDataSourceNode = nList.item(i);
+            if (sourceDataSourceNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element dataSourceElement = (Element) sourceDataSourceNode;
+                String dataSourceId = dataSourceElement.getAttribute("id");
+                if(dataSourceId.equals("source")) {
+	                if (dataSourceElement.getAttribute("type").equals("file")) {
+	                    NodeList paramNodes = dataSourceElement.getChildNodes();
+	                    for (int j = 0; j < paramNodes.getLength(); j++) {
+	                        Node paramNode = paramNodes.item(j);
+	                        //System.out.println("\nCurrent Element :" + paramNode.getNodeName());
+	                        if (paramNode.getNodeType() == Node.ELEMENT_NODE) {
+	                            Element paramElem = (Element) paramNode;
+	                            if (paramElem.getAttribute("name").equals("file")) {
+	                                String currentSourceFileName = paramElem.getAttribute("value");
+	                                System.out.println("Source file name: " + currentSourceFileName);
+	                                Attr fileName = paramElem.getAttributeNode("value");
+	                                String updatedSourceFileName = sourceFileName;
+	                                fileName.setTextContent(updatedSourceFileName);
+	                                System.out.println("New source file: " + updatedSourceFileName);
+	                            }
+	                            if (paramElem.getAttribute("name").equals("format")) {
+	                                String currentFormat = paramElem.getAttribute("value");
+	                                System.out.println("Source source format: " + currentFormat);
+	                                Attr formatAttr = paramElem.getAttributeNode("value");
+	                                formatAttr.setTextContent(format);
+	                                System.out.println("New source source format: " + format);
+	                            }
+	
+	                        }
+	
+	                    }
+	                }
+                }
+            }
+        }
     }
 
     public void updateOutputFile(String acceptFileName) throws IOException {
@@ -140,12 +185,13 @@ public class SilkConfigFileParser {
 
     public static void main(String[] args) throws Exception {
         InputStream in = (SilkConfigFileParser.class).getResourceAsStream("silk-config-file.xml");
-        File configFile = FileUtil.inputStreamToFile(in);
+        File configFile = FileUtil.inputStreamToFile(in,"silk-config-",".xml");
         File rdfFile = File.createTempFile("input-rdf-", ".ttl");
-        File outFile = File.createTempFile("output-", ".nt");
+        File outFile = File.createTempFile("accept-", ".nt");
         SilkConfigFileParser parser = new SilkConfigFileParser(configFile.getAbsolutePath());
 		parser.updateOutputFile(outFile.getAbsolutePath());
-		parser.updateSourceFile(rdfFile.getAbsolutePath());
+		parser.updateSourceDataSourceFile(rdfFile.getAbsolutePath(), "RDF/XML");
+		parser.updateTargetDataSourceFile(rdfFile.getAbsolutePath(), "RDF/XML");
 		parser.saveChanges();
     }
 

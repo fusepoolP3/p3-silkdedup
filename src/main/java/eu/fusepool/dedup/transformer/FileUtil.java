@@ -11,10 +11,10 @@ import org.apache.commons.io.IOUtils;
 
 public class FileUtil {
 	
-	public static File inputStreamToFile(InputStream in) throws IOException {
+	public static File inputStreamToFile(InputStream in, String prefix, String suffix) throws IOException {
         OutputStream out = null;
         try {
-            File temp = File.createTempFile("temp-", ".txt");
+            File temp = File.createTempFile(prefix, suffix);
             out = new FileOutputStream(temp);
             IOUtils.copy(in, out);
             return temp;
