@@ -73,11 +73,11 @@ public class DuplicatesTransformerTest {
                 .expect().statusCode(HttpStatus.SC_OK).content(new StringContains("http://www.w3.org/2002/07/owl#sameAs")).header("Content-Type", "text/turtle").when()
                 .post(baseUri);
 
-        /*
+        
          Graph graph = Parser.getInstance().parse(response.getBody().asInputStream(), "text/turtle");
          Iterator<Triple> typeTriples = graph.filter(null, OWL.sameAs, null);
          Assert.assertTrue("No equivalent entities found", typeTriples.hasNext());
-         */
+         
     }
 
     public static int findFreePort() {
