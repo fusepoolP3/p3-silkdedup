@@ -18,7 +18,11 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -71,10 +75,33 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     protected TripleCollection generateRdf(HttpRequestEntity entity) throws IOException {
     	mimeType = entity.getType();
     	supportedFormat = entity.getType().getBaseType();
-    	silkDatasourceFormat = mimeType.getBaseType().startsWith(RDF_MIME_TYPE) ? "RDF/XML" : "TURTLE"; 
+    	silkDatasourceFormat = mimeType.getBaseType().startsWith(RDF_MIME_TYPE) ? "RDF/XML" : "TURTLE";
+    	String requestUri = entity.getRequest().getRequestURI();
+    	System.out.println("Request URI: " + requestUri);
+    	InputStream configIn = null;
+    	if(requestUri.equals("/transformer")){
+    		String configUri = entity.getRequest().getParameter("config");	
+    		System.out.println("Config Uri: " + configUri);
+    		configIn = getRemoteConfigFile(configUri);
+    	}
+    	
         final InputStream inputRdfData = entity.getData();
-        TripleCollection duplicates = findDuplicates(inputRdfData);
+        TripleCollection duplicates = findDuplicates(inputRdfData, configIn);
         return duplicates;
+    }
+    
+    protected InputStream getRemoteConfigFile(String configName) throws IOException{
+    	URL configUrl = new URL(configName);
+    	URLConnection connection = configUrl.openConnection();
+    	return connection.getInputStream();
+    	/*
+    	BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+    	String inputLine;
+    	while((inputLine = in.readLine()) != null){
+    		System.out.println(inputLine);
+    	}
+    	in.close();
+    	*/
     }
 
     /**
@@ -84,8 +111,15 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
      * @return
      * @throws IOException
      */
-    protected TripleCollection findDuplicates(InputStream inputRdf) throws IOException {
-        File configFile = FileUtil.inputStreamToFile(getClass().getResourceAsStream("silk-config-file.xml"), "silk-config-", ".xml");
+    protected TripleCollection findDuplicates(InputStream inputRdf, InputStream configIn) throws IOException {    	
+    	// Default silk config file
+    	File configFile = null;
+    	if(configIn != null){
+    		configFile = FileUtil.inputStreamToFile(configIn, "silk-config-", ".xml");
+    	}
+    	else {
+    		configFile = FileUtil.inputStreamToFile(getClass().getResourceAsStream("silk-config-file.xml"), "silk-config-", ".xml");
+    	}
         File rdfFile = File.createTempFile("input-rdf-", ".rdf");
         File outFile = File.createTempFile("output-", ".nt");
         //update the config file with the paths of the input and output files

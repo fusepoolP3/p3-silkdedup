@@ -1,7 +1,5 @@
 package eu.fusepool.dedup.transformer;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,22 +7,19 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.util.Iterator;
 
-import org.apache.clerezza.rdf.core.BNode;
 import org.apache.clerezza.rdf.core.Graph;
-import org.apache.clerezza.rdf.core.Resource;
 import org.apache.clerezza.rdf.core.Triple;
-import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.clerezza.rdf.ontologies.OWL;
-import org.apache.clerezza.rdf.ontologies.RDF;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
 import org.hamcrest.core.StringContains;
 import org.junit.Assert;
 import org.junit.Before;
+
 import org.junit.Test;
+
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
@@ -32,9 +27,6 @@ import com.jayway.restassured.response.Response;
 import eu.fusepool.dedup.transformer.DuplicatesTransformer;
 import eu.fusepool.p3.transformer.server.TransformerServer;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 public class DuplicatesTransformerTest {
 
@@ -53,7 +45,6 @@ public class DuplicatesTransformerTest {
         InputStream inrdf = new FileInputStream(rdfFile);
         rdfData = IOUtils.toByteArray(inrdf);
         inrdf.close();
-        
 
         final int port = findFreePort();
         baseUri = "http://localhost:" + port + "/";
@@ -61,25 +52,15 @@ public class DuplicatesTransformerTest {
         TransformerServer server = new TransformerServer(port);
         server.start(new DuplicatesTransformer());
     }
-
+    
     @Test
     public void turtleOnGet() {
-        //Nothing specific here
-        Response response = RestAssured.given().header("Accept", "text/turtle")
-                .expect().statusCode(HttpStatus.SC_OK).header("Content-Type", "text/turtle").when()
-                .get();
+    	Response response = RestAssured.given().header("Accept", "text/turtle")
+    			.expect().statusCode(HttpStatus.SC_OK).header("Content-Type", "text/turtle").when()
+    			.get();
     }
-    
-    /*
-    @Test
-    public void rdfOnGet() {
-        //Nothing specific here
-        Response response = RestAssured.given().header("Accept", "text/turtle")
-                .expect().statusCode(HttpStatus.SC_OK).header("Content-Type", "application/rdf+xml").when()
-                .get();
-    }
-    */
 
+    
     @Test
     public void testSilkRdfTurtle() throws IOException {
 
