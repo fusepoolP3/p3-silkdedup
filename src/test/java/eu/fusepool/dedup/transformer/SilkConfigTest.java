@@ -9,9 +9,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.ServerSocket;
+import java.util.Iterator;
 
+import org.apache.clerezza.rdf.core.Graph;
+import org.apache.clerezza.rdf.core.Triple;
+import org.apache.clerezza.rdf.core.serializedform.Parser;
+import org.apache.clerezza.rdf.ontologies.OWL;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -77,6 +83,10 @@ public class SilkConfigTest {
 	    	.content(ttlData)
 	    	.expect().statusCode(HttpStatus.SC_OK).when()
 	    	.post("/transformer?config=http://localhost:" + mockPort +"/fusepoolp3/silk-config-file.xml");
+    	
+    	Graph graph = Parser.getInstance().parse(response.getBody().asInputStream(), "text/turtle");
+        Iterator<Triple> typeTriples = graph.filter(null, OWL.sameAs, null);
+        Assert.assertTrue("No equivalent entities found", typeTriples.hasNext());
     	
     }
 	
