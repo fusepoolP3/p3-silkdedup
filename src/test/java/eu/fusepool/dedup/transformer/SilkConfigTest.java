@@ -82,7 +82,7 @@ public class SilkConfigTest {
 	    	.contentType("text/turtle")
 	    	.content(ttlData)
 	    	.expect().statusCode(HttpStatus.SC_OK).when()
-	    	.post("/transformer?config=http://localhost:" + mockPort +"/fusepoolp3/silk-config-file.xml");
+	    	.post("/?config=http://localhost:" + mockPort +"/fusepoolp3/silk-config-file.xml");
     	
     	Graph graph = Parser.getInstance().parse(response.getBody().asInputStream(), "text/turtle");
         Iterator<Triple> typeTriples = graph.filter(null, OWL.sameAs, null);

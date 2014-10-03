@@ -79,10 +79,11 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     	String requestUri = entity.getRequest().getRequestURI();
     	System.out.println("Request URI: " + requestUri);
     	InputStream configIn = null;
-    	if(requestUri.equals("/transformer")){
-    		String configUri = entity.getRequest().getParameter("config");	
-    		System.out.println("Config Uri: " + configUri);
-    		configIn = getRemoteConfigFile(configUri);
+    	
+    	String configUri = entity.getRequest().getParameter("config");	
+    	if(configUri != null) {
+    	  System.out.println("Config Uri: " + configUri);
+    	  configIn = getRemoteConfigFile(configUri);
     	}
     	
         final InputStream inputRdfData = entity.getData();

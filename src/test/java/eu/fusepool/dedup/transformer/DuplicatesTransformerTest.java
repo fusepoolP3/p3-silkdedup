@@ -69,7 +69,7 @@ public class DuplicatesTransformerTest {
                 .contentType("text/turtle;charset=UTF-8")
                 .content(ttlData)
                 .expect().statusCode(HttpStatus.SC_OK).content(new StringContains("http://www.w3.org/2002/07/owl#sameAs")).header("Content-Type", SupportedFormat.TURTLE).when()
-                .post(baseUri);
+                .post();
 
         
          Graph graph = Parser.getInstance().parse(response.getBody().asInputStream(), "text/turtle");
@@ -87,7 +87,7 @@ public class DuplicatesTransformerTest {
                 .contentType("application/rdf+xml;charset=UTF-8")
                 .content(rdfData)
                 .expect().statusCode(HttpStatus.SC_OK).content(new StringContains(OWL.sameAs.getUnicodeString())).header("Content-Type", SupportedFormat.TURTLE).when()
-                .post(baseUri);
+                .post();
 
         
          Graph graph = Parser.getInstance().parse(response.getBody().asInputStream(), SupportedFormat.TURTLE);
