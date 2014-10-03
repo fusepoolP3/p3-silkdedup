@@ -83,10 +83,10 @@ public class DuplicatesTransformerTest {
     public void testSilkRdfXml() throws IOException {
 
         Response response
-                = RestAssured.given().header("Accept", "application/rdf+xml")
+                = RestAssured.given().header("Accept", "text/turtle")
                 .contentType("application/rdf+xml;charset=UTF-8")
                 .content(rdfData)
-                .expect().statusCode(HttpStatus.SC_OK).content(new StringContains(OWL.sameAs.getUnicodeString())).header("Content-Type", SupportedFormat.TURTLE).when()
+                .expect().statusCode(HttpStatus.SC_OK).content(new StringContains("sameAs")).header("Content-Type", SupportedFormat.TURTLE).when()
                 .post();
 
         
