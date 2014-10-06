@@ -22,3 +22,8 @@ The file testfoaf.ttl contains different representations of the same entity Bara
 The SILK configuration file can be fetched by its URL like in the following example
 
     curl -X POST -T testfoaf.ttl http://localhost:7100/?config=<SILK config file URL>
+
+An example SILK configuration file for the test data set is available at the URL
+
+https://raw.githubusercontent.com/fusepoolP3/p3-silkdedup/master/src/main/resources/eu/fusepool/dedup/transformer/silk-config-file.xml
+
