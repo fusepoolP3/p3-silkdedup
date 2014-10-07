@@ -5,46 +5,31 @@
  */
 package eu.fusepool.dedup.transformer;
 
-import eu.fusepool.p3.transformer.HttpRequestEntity;
-import eu.fusepool.p3.transformer.RdfGeneratingTransformer;
-import de.fuberlin.wiwiss.silk.Silk;
-import de.fuberlin.wiwiss.silk.config.LinkingConfig;
-
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 
-import org.apache.clerezza.rdf.core.MGraph;
-import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.TripleCollection;
-import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
-import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.core.serializedform.Serializer;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
-import org.apache.clerezza.rdf.ontologies.OWL;
-import org.apache.clerezza.rdf.utils.smushing.SameAsSmusher;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.fuberlin.wiwiss.silk.Silk;
+import eu.fusepool.p3.transformer.HttpRequestEntity;
+import eu.fusepool.p3.transformer.RdfGeneratingTransformer;
 
 public class DuplicatesTransformer extends RdfGeneratingTransformer {
 
@@ -117,8 +102,7 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     	else {
     		configFile = FileUtil.inputStreamToFile(getClass().getResourceAsStream("silk-config-file.xml"), "silk-config-", ".xml");
     	}
-    	// file containing the original data
-        File rdfFile = File.createTempFile("input-rdf-", ".rdf");
+    	
         // file with original data serialized in N-TRIPLE format
         File ntFile = File.createTempFile("input-rdf", ".nt");
         // file containing the equivalences
@@ -132,14 +116,14 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
         silkParser.saveChanges();
 		
 		//save the data coming from the input stream into a temp file
-        FileOutputStream outRdf = new FileOutputStream(rdfFile);
+        /*FileOutputStream outRdf = new FileOutputStream(rdfFile);
         IOUtils.copy(inputRdf, outRdf);
         inputRdf.close();
-        outRdf.close();
+        outRdf.close();*/
         
         // change the format into N-TRIPLE
         Parser parser = Parser.getInstance();
-        TripleCollection origGraph =  parser.parse(new FileInputStream(rdfFile), rdfFormat);
+        TripleCollection origGraph =  parser.parse(inputRdf, rdfFormat);
         Serializer serializer = Serializer.getInstance();
         serializer.serialize(new FileOutputStream(ntFile), origGraph, SupportedFormat.N_TRIPLE);
 
@@ -155,7 +139,7 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
         
         // remove all temporary files
         configFile.delete();
-        rdfFile.delete();
+        //rdfFile.delete();
         ntFile.delete();
         outFile.delete();
 
@@ -163,42 +147,6 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
         return resultGraph;
     }
 
-    /**
-     * Smushes the input RDF graph using the of equivalent links. Returns the
-     * same graph replacing all the equivalent URIs with a preferred one adding
-     * all the statements to it.
-     *
-     * @param inputRdfData
-     * @param duplicates
-     * @return
-     */
-    protected TripleCollection smushData(InputStream inputRdfData, TripleCollection duplicates) {
-        MGraph inputGraph = new SimpleMGraph();
-        Parser parser = Parser.getInstance();
-        parser.parse(inputGraph, inputRdfData, SupportedFormat.N_TRIPLE, null);
-        SameAsSmusher smusher = new SameAsSmusher() {
-            @Override
-            protected UriRef getPreferedIri(Set<UriRef> uriRefs) {
-                UriRef preferedIri = null;
-                Set<UriRef> canonUris = new HashSet<UriRef>();
-                for (UriRef uriRef : uriRefs) {
-                    if (uriRef.getUnicodeString().startsWith(BASE_URI)) {
-                        canonUris.add(uriRef);
-                    }
-                }
-                if (canonUris.size() > 0) {
-                    preferedIri = canonUris.iterator().next();
-                }
-                if (canonUris.size() == 0) {
-                    preferedIri = uriRefs.iterator().next();
-                }
-                return preferedIri;
-            }
-        };
-
-        //smusher.smush(inputGraph, duplicates, true); //remove the use of a LockableMGraph
-        return inputGraph;
-    }
 
     /**
      * Reads the silk output (n-triples) and returns the owl:sameas statements
