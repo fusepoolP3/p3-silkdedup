@@ -108,18 +108,12 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
         // file containing the equivalences
         File outFile = File.createTempFile("output-", ".nt");
         
-        //update the config file with the paths of the input and output files
+        //update the config file with the paths of the input and output files and the format
         SilkConfigFileParser silkParser = new SilkConfigFileParser(configFile.getAbsolutePath());
         silkParser.updateOutputFile(outFile.getAbsolutePath());
         silkParser.updateSourceDataSourceFile(ntFile.getAbsolutePath(), "N-TRIPLE");
         silkParser.updateTargetDataSourceFile(ntFile.getAbsolutePath(), "N-TRIPLE");
         silkParser.saveChanges();
-		
-		//save the data coming from the input stream into a temp file
-        /*FileOutputStream outRdf = new FileOutputStream(rdfFile);
-        IOUtils.copy(inputRdf, outRdf);
-        inputRdf.close();
-        outRdf.close();*/
         
         // change the format into N-TRIPLE
         Parser parser = Parser.getInstance();
