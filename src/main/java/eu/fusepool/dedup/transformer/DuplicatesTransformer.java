@@ -38,6 +38,7 @@ import org.apache.clerezza.rdf.core.UriRef;
 import org.apache.clerezza.rdf.core.impl.SimpleMGraph;
 import org.apache.clerezza.rdf.core.impl.TripleImpl;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
+import org.apache.clerezza.rdf.core.serializedform.Serializer;
 import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.clerezza.rdf.ontologies.OWL;
 import org.apache.clerezza.rdf.utils.smushing.SameAsSmusher;
@@ -50,9 +51,6 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     final String BASE_URI = "http://example.org/";
     final String TURTLE_MIME_TYPE = "text/turtle";
     final String RDF_MIME_TYPE = "application/rdf+xml";
-    String silkDatasourceFormat = "text/turtle";
-    String supportedFormat;
-    MimeType mimeType;
 
     private static final Logger log = LoggerFactory.getLogger(DuplicatesTransformer.class);
 
@@ -73,9 +71,7 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
 
     @Override
     protected TripleCollection generateRdf(HttpRequestEntity entity) throws IOException {
-    	mimeType = entity.getType();
-    	supportedFormat = entity.getType().getBaseType();
-    	silkDatasourceFormat = mimeType.getBaseType().startsWith(RDF_MIME_TYPE) ? "RDF/XML" : "TURTLE";
+    	String rdfDataFormat = entity.getType().getBaseType();
     	String requestUri = entity.getRequest().getRequestURI();
     	System.out.println("Request URI: " + requestUri);
     	InputStream configIn = null;
@@ -87,7 +83,7 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     	}
     	
         final InputStream inputRdfData = entity.getData();
-        TripleCollection duplicates = findDuplicates(inputRdfData, configIn);
+        TripleCollection duplicates = findDuplicates(inputRdfData, rdfDataFormat, configIn);
         return duplicates;
     }
     
@@ -112,7 +108,7 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
      * @return
      * @throws IOException
      */
-    protected TripleCollection findDuplicates(InputStream inputRdf, InputStream configIn) throws IOException {    	
+    protected TripleCollection findDuplicates(InputStream inputRdf, String rdfFormat, InputStream configIn) throws IOException {    	
     	// Default silk config file
     	File configFile = null;
     	if(configIn != null){
@@ -121,26 +117,44 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     	else {
     		configFile = FileUtil.inputStreamToFile(getClass().getResourceAsStream("silk-config-file.xml"), "silk-config-", ".xml");
     	}
+    	// file containing the original data
         File rdfFile = File.createTempFile("input-rdf-", ".rdf");
+        // file with original data serialized in N-TRIPLE format
+        File ntFile = File.createTempFile("input-rdf", ".nt");
+        // file containing the equivalences
         File outFile = File.createTempFile("output-", ".nt");
+        
         //update the config file with the paths of the input and output files
-        SilkConfigFileParser parser = new SilkConfigFileParser(configFile.getAbsolutePath());
-		parser.updateOutputFile(outFile.getAbsolutePath());
-		parser.updateSourceDataSourceFile(rdfFile.getAbsolutePath(), silkDatasourceFormat);
-		parser.updateTargetDataSourceFile(rdfFile.getAbsolutePath(), silkDatasourceFormat);
-		parser.saveChanges();
-		//save the data coming from the stream into a temp file 
+        SilkConfigFileParser silkParser = new SilkConfigFileParser(configFile.getAbsolutePath());
+        silkParser.updateOutputFile(outFile.getAbsolutePath());
+        silkParser.updateSourceDataSourceFile(ntFile.getAbsolutePath(), "N-TRIPLE");
+        silkParser.updateTargetDataSourceFile(ntFile.getAbsolutePath(), "N-TRIPLE");
+        silkParser.saveChanges();
+		
+		//save the data coming from the input stream into a temp file
         FileOutputStream outRdf = new FileOutputStream(rdfFile);
         IOUtils.copy(inputRdf, outRdf);
         inputRdf.close();
         outRdf.close();
+        
+        // change the format into N-TRIPLE
+        Parser parser = Parser.getInstance();
+        TripleCollection origGraph =  parser.parse(new FileInputStream(rdfFile), rdfFormat);
+        Serializer serializer = Serializer.getInstance();
+        serializer.serialize(new FileOutputStream(ntFile), origGraph, SupportedFormat.N_TRIPLE);
 
         // interlink entities
         Silk.executeFile(configFile, null, 1, true);
-        log.info("Interlinking task completed.");
+        log.info("Interlinking task completed."); 
+        TripleCollection equivalences = parseResult(outFile); 
+        
+        // add the equivalence set to the input rdf data to be sent back to the client
+        TripleCollection resultGraph = new SimpleMGraph();
+        resultGraph.addAll(origGraph);
+        resultGraph.addAll(equivalences);
 
         // returns the result to the client
-        return parseResult(outFile);
+        return resultGraph;
     }
 
     /**
@@ -155,7 +169,7 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     protected TripleCollection smushData(InputStream inputRdfData, TripleCollection duplicates) {
         MGraph inputGraph = new SimpleMGraph();
         Parser parser = Parser.getInstance();
-        parser.parse(inputGraph, inputRdfData, supportedFormat, null);
+        parser.parse(inputGraph, inputRdfData, SupportedFormat.N_TRIPLE, null);
         SameAsSmusher smusher = new SameAsSmusher() {
             @Override
             protected UriRef getPreferedIri(Set<UriRef> uriRefs) {
