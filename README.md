@@ -16,12 +16,12 @@ foaf:givenName and foaf:familyName where foaf is a prefix for the namespace http
 
 To test the application open a new shell, go to src/test/resources/eu/fusepool/dedup/transformer folder and run the following command 
 
-    curl -X POST -T testfoaf.ttl http://localhost:7100
+    curl -X POST -H "Content-Type: text/turtle" -T testfoaf.ttl http://localhost:7100
 
 The file testfoaf.ttl contains different representations of the same entity Barack Obama. The result of the interlinking process, a set of owl:sameAs statements, will be sent back to the client.
 The SILK configuration file can be fetched by its URL like in the following example
 
-    curl -X POST -T testfoaf.ttl http://localhost:7100/?config=<SILK config file URL>
+    curl -X POST -H "Content-Type: text/turtle" -T testfoaf.ttl http://localhost:7100/?config=<SILK config file URL>
 
 An example SILK configuration file for the test data set is available at the URL
 
