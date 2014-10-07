@@ -15,11 +15,10 @@ import org.apache.clerezza.rdf.ontologies.OWL;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
 import org.hamcrest.core.StringContains;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-
 import org.junit.Test;
-
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
@@ -30,18 +29,20 @@ import eu.fusepool.p3.transformer.server.TransformerServer;
 
 public class DuplicatesTransformerTest {
 
+	File ttlFile = null;
+	File rdfFile = null;
     private String baseUri;
     private byte[] rdfData;
     private byte[] ttlData;
 
     @Before
     public void setUp() throws Exception {
-        File ttlFile = FileUtil.inputStreamToFile(getClass().getResourceAsStream("testfoaf.ttl"), "test-", ".ttl");
+        ttlFile = FileUtil.inputStreamToFile(getClass().getResourceAsStream("testfoaf.ttl"), "test-", ".ttl");
         InputStream inttl = new FileInputStream(ttlFile);
         ttlData = IOUtils.toByteArray(inttl);
         inttl.close();
         
-        File rdfFile = FileUtil.inputStreamToFile(getClass().getResourceAsStream("testfoaf.rdf"), "test-", ".rdf");
+        rdfFile = FileUtil.inputStreamToFile(getClass().getResourceAsStream("testfoaf.rdf"), "test-", ".rdf");
         InputStream inrdf = new FileInputStream(rdfFile);
         rdfData = IOUtils.toByteArray(inrdf);
         inrdf.close();
@@ -51,6 +52,12 @@ public class DuplicatesTransformerTest {
         RestAssured.baseURI = "http://localhost:" + port + "/";
         TransformerServer server = new TransformerServer(port);
         server.start(new DuplicatesTransformer());
+    }
+    
+    @After
+    public void tearDown() throws Exception {
+    	ttlFile.delete();
+    	rdfFile.delete();
     }
     
     @Test

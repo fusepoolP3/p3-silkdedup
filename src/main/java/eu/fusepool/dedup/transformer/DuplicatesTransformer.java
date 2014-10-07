@@ -152,6 +152,12 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
         TripleCollection resultGraph = new SimpleMGraph();
         resultGraph.addAll(origGraph);
         resultGraph.addAll(equivalences);
+        
+        // remove all temporary files
+        configFile.delete();
+        rdfFile.delete();
+        ntFile.delete();
+        outFile.delete();
 
         // returns the result to the client
         return resultGraph;

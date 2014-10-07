@@ -17,6 +17,7 @@ import org.apache.clerezza.rdf.core.serializedform.Parser;
 import org.apache.clerezza.rdf.ontologies.OWL;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -37,7 +38,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import org.junit.Rule;
 
 public class SilkConfigTest {
-	
+	File ttlFile = null;
 	private String transformerBaseUri;
 	private byte[] silkconf;
 	private byte[] ttlData;
@@ -51,7 +52,7 @@ public class SilkConfigTest {
 	
 	@Before
     public void setUp() throws Exception {
-		File ttlFile = FileUtil.inputStreamToFile(getClass().getResourceAsStream("testfoaf.ttl"), "test-", ".ttl");
+		ttlFile = FileUtil.inputStreamToFile(getClass().getResourceAsStream("testfoaf.ttl"), "test-", ".ttl");
         InputStream inttl = new FileInputStream(ttlFile);
         ttlData = IOUtils.toByteArray(inttl);
         inttl.close();
@@ -64,6 +65,11 @@ public class SilkConfigTest {
         TransformerServer server = new TransformerServer(transformerServerPort);
         server.start(new DuplicatesTransformer());
     
+	}
+	
+	@After
+	public void tearDown() throws Exception {
+		ttlFile.delete();
 	}
 	
 	@Rule
