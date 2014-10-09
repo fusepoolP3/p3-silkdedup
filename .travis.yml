@@ -1,1 +1,12 @@
 language: java
+before_install: mvn install -DskipTests=true -DfinalName=p3-silkdedup-$TRAVIS_TAG
+deploy:
+  provider: releases
+  api_key:
+    secure: QxlAqf3G1B8t6QU4tCVPJP8t3NxhGpxdUqZWGsbdrUZUmaHApUnfJT1egJcfh/WQMt/0KHTDdN2mx5nXYNVgyI9MMr0Mh2haXBVQ8/erlJGphNSoBEBBAdWaN96/W9ZCeixY0ZMJQWeDA0ZyFdyXsqu6SiaTC/S7wijSPcGtNEc=
+  file: target/p3-silkdedup-$TRAVIS_TAG-jar-with-dependencies.jar
+  skip_cleanup: true
+  on:
+    repo: fusepoolP3/p3-silkdedup
+    tags: true
+    all_branches: true
