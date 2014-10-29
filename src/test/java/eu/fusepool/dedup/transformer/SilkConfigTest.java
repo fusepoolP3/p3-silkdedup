@@ -77,12 +77,17 @@ public class SilkConfigTest {
 	
 	@Test
     public void testRemoteConfig() {
+	    // Set up a service in the mock server to respond to a get request that must be sent by the transformer 
+        // to fetch the silk config file 
 		stubFor(get(urlEqualTo("/fusepoolp3/silk-config-file.xml"))
 	    	    .willReturn(aResponse()
 	    			.withStatus(HttpStatus.SC_OK)
 	    			.withHeader("Content-Type", "text/xml")
 	    			.withBody(silkconf)));
 		
+		// The response object acts as a transformer's client. It sends a post request
+		// to the transformer with the url of the silk config file, the data to be interlinked
+		// and gets the result from the transformer.
     	Response response = 
 	    	RestAssured.given().header("Accept", "text/turtle")
 	    	.contentType("text/turtle")
