@@ -157,7 +157,7 @@ public class DuplicatesTransformerTest {
     }
     
     /**
-     * The transformer receives data and a url from the client, fetches the xslt from the url, applies the transformation
+     * The transformer receives RDF data and a url from the client, fetches the SILK config file from the url, applies the linkage rules
      * and then check if the transformation is compatible with the expected result.
      * @throws Exception
      */
