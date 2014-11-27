@@ -76,14 +76,6 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     	URL configUrl = new URL(configName);
     	URLConnection connection = configUrl.openConnection();
     	return connection.getInputStream();
-    	/*
-    	BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-    	String inputLine;
-    	while((inputLine = in.readLine()) != null){
-    		System.out.println(inputLine);
-    	}
-    	in.close();
-    	*/
     }
 
     /**
