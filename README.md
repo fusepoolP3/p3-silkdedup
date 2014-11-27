@@ -2,8 +2,11 @@ Fusepool P3-SilkDedup
 ============
 
 A deduplication transformer. Implements the requirements in [FP-106](https://fusepool.atlassian.net/browse/FP-106).
+The apllication enables a user to send an http POST request with RDF data to find duplicates within it. 
 
-The apllication enables a user to send an http POST request with RDF data to find duplicates within it. Compile the application using the command
+[![Build Status](https://travis-ci.org/fusepoolP3/p3-silkdedup.svg)](https://travis-ci.org/fusepoolP3/p3-silkdedup)
+
+Compile the application using the command
 
     mvn install
 
