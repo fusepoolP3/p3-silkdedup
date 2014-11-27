@@ -61,6 +61,14 @@ If the SILK configuration file can be put in a web server just use its http url 
 
 https://raw.githubusercontent.com/fusepoolP3/p3-silkdedup/master/src/main/resources/eu/fusepool/dedup/transformer/silk-config-file.xml
 
-The result of the interlinking process, a set of owl:sameAs statements, will be sent back to the client.
+The result of the interlinking process, a set of owl:sameAs statements is added to each entity representation and sent back to the client.
+
+    <http://example.org/Obama>
+              a       <http://xmlns.com/foaf/0.1/Person> ;
+              <http://www.w3.org/2002/07/owl#sameAs>
+                      <http://www.whitehouse.gov/Barack_Obama> , <http://dbpedia.org/Barack_Obama> , <http://example.org/Obama> ;
+              <http://xmlns.com/foaf/0.1/familyName> "Obama" ;
+              <http://xmlns.com/foaf/0.1/givenName> "Barack" .
+
 
 [1] https://www.assembla.com/wiki/show/silk/Link_Specification_Language
