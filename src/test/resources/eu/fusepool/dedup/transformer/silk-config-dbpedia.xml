@@ -1,0 +1,88 @@
+<Silk>
+    <!--
+    Interlink locations within the Province of Trento with dbpedia.org
+    -->
+    <Prefixes>
+        <Prefix namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#" id="rdf"></Prefix>     
+        <Prefix namespace="http://www.w3.org/2001/XMLSchema#" id="xsd"></Prefix>
+        <Prefix namespace="http://www.w3.org/2000/01/rdf-schema#" id="rdfs"></Prefix>
+        <Prefix namespace="http://www.w3.org/2002/07/owl#" id="owl"></Prefix>
+        <Prefix namespace="http://www.w3.org/2003/01/geo/wgs84_pos#" id="geo"></Prefix>        
+        <Prefix namespace="http://schema.org/" id="schema"></Prefix>
+        <Prefix namespace="http://dbpedia.org/ontology/" id="dbpedia-owl"></Prefix>
+        <Prefix namespace="http://dbpedia.org/resource/" id="dbpedia"></Prefix>
+    </Prefixes>
+    <DataSources>
+        <DataSource id="source" type="file">
+            <Param name="file" value="/home/luigi/jena/jena-fuseki-1.1.1/Data/eventi.ttl"></Param>
+            <Param name="format" value="TURTLE"></Param>
+        </DataSource>
+        <DataSource id="target" type="sparqlEndpoint">
+            <Param name="endpointURI" value="http://dbpedia.org/sparql" />
+            <Param name="pageSize" value="50000" />
+        </DataSource>  
+    </DataSources>
+    <Blocking blocks="10" />
+    <Interlinks>
+        <Interlink id="places">
+            <LinkType>owl:sameAs</LinkType>
+            <SourceDataset dataSource="source" var="s_place">
+                <RestrictTo>
+                    ?event schema:location ?s_place . 
+                    ?s_place geo:lat ?lat .
+                    ?s_place geo:long ?long .            
+                    ?s_place schema:address ?address .
+                    ?address schema:addressLocality ?location . 
+                </RestrictTo>
+            </SourceDataset>
+            <TargetDataset dataSource="target" var="t_place">
+                <RestrictTo>
+                    ?t_place  rdf:type dbpedia-owl:PopulatedPlace .
+                    ?t_place  dbpedia-owl:province dbpedia:Trentino .
+                    ?t_place geo:lat ?lat .
+                    ?t_place geo:long ?long .   
+                    ?t_place  rdfs:label ?label .                   
+                    FILTER( lang(?label)='it' ) 
+                </RestrictTo>
+            </TargetDataset>
+            <LinkageRule>
+                <Aggregate type="max">
+                    <Compare metric="jaroWinkler">
+                        <TransformInput function="lowerCase">
+			    <Input path="?s_place/schema:address/schema:addressLocality"></Input>
+                        </TransformInput>
+                        <TransformInput function="lowerCase">
+			    <Input path="?t_place/rdfs:label"></Input>
+                        </TransformInput>
+                    </Compare>		 
+                    <Compare metric="wgs84">
+                        <TransformInput function="concat">
+                            <Input path="?s_place/geo:lat" />
+                            <Input path="?s_place/geo:long" />   
+                            <Param name="glue" value=" " />                                     
+                        </TransformInput>
+                        <TransformInput function="concat">
+                            <Input path="?t_place/geo:lat" />
+                            <Input path="?t_place/geo:long" />
+                            <Param name="glue" value=" " />                                        
+                        </TransformInput>
+                        <Param name="unit" value="km" />
+                        <Param name="threshold" value="20" />
+                        <Param name="curveStyle" value="linear" />
+                    </Compare>
+                </Aggregate>
+            </LinkageRule>
+            <Filter threshold="0.95"></Filter>
+            <Outputs>
+                <Output type="file" minConfidence="0.90">
+                    <Param name="file" value="/home/luigi/Downloads/silk_2.6.0/commandline/accepted_links_dbpedia_20150320.nt" />
+                    <Param name="format" value="ntriples" />
+                </Output>
+				            
+            </Outputs>
+        </Interlink>
+    </Interlinks>
+</Silk>
+
+
+
