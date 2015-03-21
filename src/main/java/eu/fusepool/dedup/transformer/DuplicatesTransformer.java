@@ -56,7 +56,7 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
 
     @Override
     protected TripleCollection generateRdf(HttpRequestEntity entity) throws IOException {
-    	String rdfDataFormat = entity.getType().getBaseType();
+    	String rdfDataFormat = SupportedFormat.TURTLE;//entity.getType().getBaseType();
     	String requestUri = entity.getRequest().getRequestURI();
     	System.out.println("Request URI: " + requestUri);
     	InputStream configIn = null;
@@ -100,11 +100,14 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
         // file containing the equivalences
         File outFile = File.createTempFile("output-", ".nt");
         
-        //update the config file with the paths of the input and output files and the format
+        // update the config file with the paths of the source datasource and output files and the format
+        // if the type of target datasource is "file" update the path (deduplication) 
         SilkConfigFileParser silkParser = new SilkConfigFileParser(configFile.getAbsolutePath());
         silkParser.updateOutputFile(outFile.getAbsolutePath());
         silkParser.updateSourceDataSourceFile(ntFile.getAbsolutePath(), "N-TRIPLE");
-        silkParser.updateTargetDataSourceFile(ntFile.getAbsolutePath(), "N-TRIPLE");
+        if (silkParser.getTargetDataSourcetype().equals("file")) {
+            silkParser.updateTargetDataSourceFile(ntFile.getAbsolutePath(), "N-TRIPLE"); //deduplication
+        }
         silkParser.saveChanges();
         
         // change the format into N-TRIPLE

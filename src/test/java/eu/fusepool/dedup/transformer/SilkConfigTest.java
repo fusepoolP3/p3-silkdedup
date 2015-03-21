@@ -14,6 +14,7 @@ import java.util.Iterator;
 import org.apache.clerezza.rdf.core.Graph;
 import org.apache.clerezza.rdf.core.Triple;
 import org.apache.clerezza.rdf.core.serializedform.Parser;
+import org.apache.clerezza.rdf.core.serializedform.SupportedFormat;
 import org.apache.clerezza.rdf.ontologies.OWL;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
@@ -53,11 +54,13 @@ public class SilkConfigTest {
 	@Before
     public void setUp() throws Exception {
 		ttlFile = FileUtil.inputStreamToFile(getClass().getResourceAsStream("testfoaf.ttl"), "test-", ".ttl");
-        InputStream inttl = new FileInputStream(ttlFile);
+	    //ttlFile = FileUtil.inputStreamToFile(getClass().getResourceAsStream("eventi.ttl"), "test-", ".ttl");
+	    InputStream inttl = new FileInputStream(ttlFile);
         ttlData = IOUtils.toByteArray(inttl);
         inttl.close();
         
 		silkconf = IOUtils.toByteArray(getClass().getResourceAsStream("silk-config-file.xml"));
+        //silkconf = IOUtils.toByteArray(getClass().getResourceAsStream("silk-config-dbpedia.xml"));
 		
 		final int transformerServerPort = findFreePort();
         transformerBaseUri = "http://localhost:" + transformerServerPort + "/";
@@ -95,7 +98,7 @@ public class SilkConfigTest {
 	    	.expect().statusCode(HttpStatus.SC_OK).when()
 	    	.post("/?config=http://localhost:" + mockPort +"/fusepoolp3/silk-config-file.xml");
     	
-    	Graph graph = Parser.getInstance().parse(response.getBody().asInputStream(), "text/turtle");
+    	Graph graph = Parser.getInstance().parse(response.getBody().asInputStream(), SupportedFormat.TURTLE);
         Iterator<Triple> typeTriples = graph.filter(null, OWL.sameAs, null);
         Assert.assertTrue("No equivalent entities found", typeTriples.hasNext());
     	

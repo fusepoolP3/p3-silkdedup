@@ -14,7 +14,7 @@
     </Prefixes>
     <DataSources>
         <DataSource id="source" type="file">
-            <Param name="file" value="/home/luigi/jena/jena-fuseki-1.1.1/Data/eventi.ttl"></Param>
+            <Param name="file" value="inputdata.ttl"></Param>
             <Param name="format" value="TURTLE"></Param>
         </DataSource>
         <DataSource id="target" type="sparqlEndpoint">

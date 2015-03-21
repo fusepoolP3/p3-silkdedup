@@ -12,27 +12,14 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.wymiwyg.commons.util.arguments.ArgumentHandler;
-
-import eu.fusepool.p3.transformer.sample.Arguments;
-
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.logging.Level;
-
 import javax.xml.transform.TransformerException;
 
-import org.apache.commons.io.IOUtils;
 import org.xml.sax.SAXException;
 
 public class SilkConfigFileParser {
@@ -54,6 +41,23 @@ public class SilkConfigFileParser {
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
+    }
+    
+    public String getTargetDataSourcetype() {
+        String targetDataSourcetype = "";
+        NodeList nList = doc.getElementsByTagName("DataSource");
+        for (int i = 0; i < nList.getLength(); i++) {
+            Node dataSourceNode = nList.item(i);
+            if (dataSourceNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element targetDataSourceElement = (Element) dataSourceNode;
+                String dataSourceId = targetDataSourceElement.getAttribute("id");
+                if(dataSourceId.equals("target")){                    
+                    targetDataSourcetype = targetDataSourceElement.getAttribute("type");                    
+                }
+            }
+        }
+        
+        return targetDataSourcetype;
     }
 
     public void updateTargetDataSourceFile(String sourceFileName, String format) throws IOException {
@@ -191,6 +195,8 @@ public class SilkConfigFileParser {
         SilkConfigFileParser parser = new SilkConfigFileParser(configFile.getAbsolutePath());
 		parser.updateOutputFile(outFile.getAbsolutePath());
 		parser.updateSourceDataSourceFile(rdfFile.getAbsolutePath(), "RDF/XML");
+		String targetType = parser.getTargetDataSourcetype();
+		System.out.println(targetType);
 		parser.updateTargetDataSourceFile(rdfFile.getAbsolutePath(), "RDF/XML");
 		parser.saveChanges();
     }
