@@ -68,7 +68,7 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     	}
     	
         final InputStream inputRdfData = entity.getData();
-        TripleCollection duplicates = findDuplicates(inputRdfData, rdfDataFormat, configIn);
+        TripleCollection duplicates = findSameEntities(inputRdfData, rdfDataFormat, configIn);
         return duplicates;
     }
     
@@ -79,13 +79,15 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     }
 
     /**
-     * Finds duplicates in a graph. The Silk configuration file is updated with the current source and output file paths. 
+     * The client RDF data is always used as the source data source, of type file, for the comparisons with a target data source. 
+     * The target data source can be of type file or a SPARQL endpoint. If the target data source in the Silk config file
+     * is set to be of type file then the same client data will be used and the task is a deduplication task (Silk works only with local files). 
      * The updated configuration file and the input RDF data and the output files are stored in the /tmp/ folder.
      * @param inputRdf
      * @return
      * @throws IOException
      */
-    protected TripleCollection findDuplicates(InputStream inputRdf, String rdfFormat, InputStream configIn) throws IOException {    	
+    protected TripleCollection findSameEntities(InputStream inputRdf, String rdfFormat, InputStream configIn) throws IOException {    	
     	// Default silk config file
     	File configFile = null;
     	if(configIn != null){
