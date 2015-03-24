@@ -45,9 +45,9 @@ public class Main {
     private static void start(Arguments arguments) throws Exception {
     	
         TransformerServer server = new TransformerServer(arguments.getPort());
-        InputStream in = Main.class.getResourceAsStream("bla.txt");
+        //InputStream in = Main.class.getResourceAsStream("bla.txt");
         
-        server.start(new DuplicatesTransformer());
+        server.start(new DuplicatesTransformerFactory());
        
         server.join();
     }
