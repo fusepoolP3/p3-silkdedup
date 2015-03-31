@@ -75,7 +75,7 @@
             <Filter threshold="0.95"></Filter>
             <Outputs>
                 <Output type="file" minConfidence="0.90">
-                    <Param name="file" value="/home/luigi/Downloads/silk_2.6.0/commandline/accepted_links_dbpedia_20150320.nt" />
+                    <Param name="file" value="accepted_links_dbpedia.nt" />
                     <Param name="format" value="ntriples" />
                 </Output>
 				            
