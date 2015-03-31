@@ -1,6 +1,6 @@
 <Silk>
     <!--
-    Interlink locations within the Province of Trento with dbpedia.org
+    Finds duplicate locations within the events list of the Province of Trento
     -->
     <Prefixes>
         <Prefix namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#" id="rdf"></Prefix>     
@@ -9,8 +9,6 @@
         <Prefix namespace="http://www.w3.org/2002/07/owl#" id="owl"></Prefix>
         <Prefix namespace="http://www.w3.org/2003/01/geo/wgs84_pos#" id="geo"></Prefix>        
         <Prefix namespace="http://schema.org/" id="schema"></Prefix>
-        <Prefix namespace="http://dbpedia.org/ontology/" id="dbpedia-owl"></Prefix>
-        <Prefix namespace="http://dbpedia.org/resource/" id="dbpedia"></Prefix>
     </Prefixes>
     <DataSources>
         <DataSource id="source" type="file">
