@@ -67,7 +67,7 @@
                             <Param name="glue" value=" " />                                        
                         </TransformInput>
                         <Param name="unit" value="km" />
-                        <Param name="threshold" value="20" />
+                        <Param name="threshold" value="2" />
                         <Param name="curveStyle" value="linear" />
                     </Compare>
                 </Aggregate>
