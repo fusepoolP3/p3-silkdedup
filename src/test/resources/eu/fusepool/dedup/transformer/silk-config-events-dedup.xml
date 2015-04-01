@@ -69,9 +69,9 @@
                     </Compare>
                 </Aggregate>
             </LinkageRule>
-            <Filter threshold="0.95"></Filter>
+            <Filter threshold="0.99"></Filter>
             <Outputs>
-                <Output type="file" minConfidence="0.90">
+                <Output type="file">
                     <Param name="file" value="accepted_duplicates.nt" />
                     <Param name="format" value="ntriples" />
                 </Output>
