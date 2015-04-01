@@ -69,7 +69,7 @@
                     </Compare>
                 </Aggregate>
             </LinkageRule>
-            <Filter threshold="0.99"></Filter>
+            <Filter threshold="0.99"/>
             <Outputs>
                 <Output type="file">
                     <Param name="file" value="accepted_duplicates.nt" />
