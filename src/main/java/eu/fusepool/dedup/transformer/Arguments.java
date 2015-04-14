@@ -28,7 +28,7 @@ public interface Arguments extends ArgumentsWithHelp {
 
     @CommandLine(longName = "port", shortName = {"P"}, required = false,
             defaultValue = "7100",
-            description = "The port on which the proxy shall listen")
+            description = "The port on which the transformer shall listen")
     public int getPort();
     
 }
