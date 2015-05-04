@@ -1,4 +1,4 @@
-Fusepool P3-SilkDedup
+SilkDedup Transformer
 ============
 
 A deduplication and interlinking transformer. Implements the requirements in [FP-106](https://fusepool.atlassian.net/browse/FP-106). The difference between a deduplication task and an interlinking task is in the purpose and is related to the source and target data source. If they are the same the task is said deduplication as the purpose is to find duplicate entities within the same data set for which no differences in the descriptions are expected. The purpose is not to merge information but to remove redundancy. In an interlinking task the source and target data source are different and different information about an entity are expected in the two data sets so that the purpose is to merge them. The result in both case is the same, a set of 0 or more pairs of equivalent entities. The interlinking and deduplication tasks are based on a set of rules written in the SILK Link Specification Language (see [1]) and stored in a configuration file. The config file url must be passed as a query parameter to the transformer in the http POST request with the RDF data containing the entities that must be deduplicated/interlinked. The client RDF data is always used as the source data source, of type "file", for the comparisons with a target data source. The target data source can be of type "file" or "sparqlEndpoint". If the target data source is of type "file" then the same client data will be used as target data source (deduplication).
@@ -6,6 +6,7 @@ A deduplication and interlinking transformer. Implements the requirements in [FP
 
 [![Build Status](https://travis-ci.org/fusepoolP3/p3-silkdedup.svg)](https://travis-ci.org/fusepoolP3/p3-silkdedup)
 
+## Compiling and Running 
 Compile the application using the command
 
     mvn install
@@ -14,7 +15,7 @@ To start the application move to the p3-silkdedup/ folder and run the command
 
     mvn exec:java
 
-
+## Usage
 
 A small data set and a SILK config file is provided in src/test/resources/eu/fusepool/dedup/transformer folder as an example. The file testfoaf.ttl shown below contains different representations and URIs of the same entity 'Barack Obama'
 
