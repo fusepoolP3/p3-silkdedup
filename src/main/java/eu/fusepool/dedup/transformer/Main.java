@@ -16,7 +16,7 @@
 package eu.fusepool.dedup.transformer;
 
 
-import eu.fusepool.p3.transformer.sample.Arguments;
+import eu.fusepool.dedup.transformer.Arguments;
 import eu.fusepool.p3.transformer.server.TransformerServer;
 import java.io.File;
 import java.io.FileNotFoundException;
