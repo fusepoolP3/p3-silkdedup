@@ -156,7 +156,7 @@
                     <mainClass>${main.class}</mainClass>
                     <arguments>
                         <argument>-P</argument>
-                        <argument>8306</argument>
+                        <argument>7100</argument>
                     </arguments>
                 </configuration>
             </plugin>
