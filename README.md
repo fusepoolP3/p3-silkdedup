@@ -6,14 +6,25 @@ A deduplication and interlinking transformer. Implements the requirements in [FP
 
 [![Build Status](https://travis-ci.org/fusepoolP3/p3-silkdedup.svg)](https://travis-ci.org/fusepoolP3/p3-silkdedup)
 
+## Try it out
+The transformer can be started using the latest release that can be downloaded from the releases section. The executable jar file contains all the necessary dependencies. To start an instance of the transformer factory run the command
+
+      java -jar p3-silkdedup-v1.0.0-20150505-jar-with-dependencies.jar
+    
+An instance of the SilkDedup transformer factory will be listening at the default port 8306. The port number can be changed, for example to use port number 7100, as follows
+
+     java -jar p3-silkdedup-v1.0.0-20150505-jar-with-dependencies.jar -P 7100
+     
 ## Compiling and Running 
-Compile the application using the command
+Compile the Maven project using the command
 
     mvn install
 
 To start the application move to the p3-silkdedup/ folder and run the command
 
     mvn exec:java
+
+The default port number used by the transformer when started with Maven is set in the pom.xml file.
 
 ## Usage
 
