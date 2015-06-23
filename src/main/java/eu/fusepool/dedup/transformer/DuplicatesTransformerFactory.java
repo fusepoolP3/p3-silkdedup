@@ -18,13 +18,23 @@ import javax.servlet.http.HttpServletRequest;
  * @author reto
  */
 public class DuplicatesTransformerFactory implements TransformerFactory {
+	// Parameter (mandatory) used in the POST request to provide the URL of the Silk config file
+	public final String SILK_CONFIG_FILE_URI_PARAM = "config";
+	// Parameter (optional) used in the POST request to set the transformer execution mode to 
+	// asynchronous (true/false). Default value is false (synchronous)
+	public final String TRANSFORMER_ASYNC_PARAM = "async";
+	
 	private boolean asynchronous = false; //set the transformer execution mode to asynchronous when set to true
     private final Map<String, Transformer> duplicatesTransformerList = 
             new HashMap<>();
     
     @Override
     public Transformer getTransformer(HttpServletRequest request) {
-        final String silkConfigUri = request.getParameter("config");            
+        final String silkConfigUri = getRequestParamValue(request.getQueryString(), SILK_CONFIG_FILE_URI_PARAM);
+        final String asyncValue = getRequestParamValue(request.getQueryString(), TRANSFORMER_ASYNC_PARAM);
+        if ( ! "".equals(asyncValue) ) {
+        	asynchronous = Boolean.getBoolean(asyncValue);
+        }
         return getTransfomerFor(silkConfigUri);
     }
 
@@ -32,10 +42,30 @@ public class DuplicatesTransformerFactory implements TransformerFactory {
         if (duplicatesTransformerList.containsKey( silkConfigUri )) {
             return duplicatesTransformerList.get( silkConfigUri );
         }
-        final Transformer newTransformer = new DuplicatesTransformer();
+        
+        final Transformer newTransformer = new DuplicatesTransformer(asynchronous);
         
         duplicatesTransformerList.put(silkConfigUri, newTransformer);
         return newTransformer;
+    }
+    /**
+     * Extracts the Silk config file URI from the querystring. When more than one parameter is sent
+     * in a POST message using the standard format ?param1=value1&param2=value2" with a content-type 
+     * that is not application/x-www-form-urlencoded only the first parameter is returned using an 
+     * HttpServletRequest object so it is necessary to parse the full query string to get all the 
+     * query parameters.
+     * @param queryString
+     * @return
+     */
+    private String getRequestParamValue(String queryString, String paramName) {
+    	String paramValue = "";
+    	String [] params = queryString.split("&");
+    	for(String param: params){
+    		if ( paramName.equals( param.split("=")[0]) ) {
+    			paramValue = param.split("=")[1];
+    		}
+    	}
+    	return paramValue;
     }
     
 }
