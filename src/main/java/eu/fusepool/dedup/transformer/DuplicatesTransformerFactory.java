@@ -7,11 +7,16 @@ package eu.fusepool.dedup.transformer;
 
 import eu.fusepool.p3.transformer.Transformer;
 import eu.fusepool.p3.transformer.TransformerFactory;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -23,6 +28,8 @@ public class DuplicatesTransformerFactory implements TransformerFactory {
 	// Parameter (optional) used in the POST request to set the transformer execution mode to 
 	// asynchronous (true/false). Default value is false (synchronous)
 	public final String TRANSFORMER_ASYNC_PARAM = "async";
+	
+	private static final Logger log = LoggerFactory.getLogger(DuplicatesTransformerFactory.class);
 	
 	private boolean asynchronous = false; //set the transformer execution mode to asynchronous when set to true
     private final Map<String, Transformer> duplicatesTransformerList = 
@@ -65,6 +72,7 @@ public class DuplicatesTransformerFactory implements TransformerFactory {
     			paramValue = param.split("=")[1];
     		}
     	}
+    	log.info(paramName + ": " + paramValue);;
     	return paramValue;
     }
     
