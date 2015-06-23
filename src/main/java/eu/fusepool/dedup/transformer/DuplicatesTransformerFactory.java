@@ -64,8 +64,9 @@ public class DuplicatesTransformerFactory implements TransformerFactory {
      * @param queryString
      * @return
      */
-    private String getRequestParamValue(String queryString, String paramName) {
+    protected String getRequestParamValue(String queryString, String paramName) {
     	String paramValue = "";
+    	log.info("Query string: " + queryString);
     	String [] params = queryString.split("&");
     	for(String param: params){
     		if ( paramName.equals( param.split("=")[0]) ) {
