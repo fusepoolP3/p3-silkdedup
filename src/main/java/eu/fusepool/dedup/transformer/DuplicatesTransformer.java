@@ -45,6 +45,7 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
 
     public DuplicatesTransformer(boolean asynch) {
     	asynchronousMode = asynch;
+    	System.out.println("Asynchronous: " + asynchronousMode);
     }
 
     @Override
