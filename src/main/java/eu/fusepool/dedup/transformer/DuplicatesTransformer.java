@@ -45,7 +45,11 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
 
     public DuplicatesTransformer(boolean asynch) {
     	asynchronousMode = asynch;
-    	System.out.println("Asynchronous: " + asynchronousMode);
+    	System.out.println("Asynchronous: " + isLongRunning());
+    }
+    
+    public void setAsync() {
+    	asynchronousMode = true;
     }
 
     @Override
@@ -158,10 +162,10 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
         return parser.parse(new FileInputStream(file), SupportedFormat.N_TRIPLE);
     }
 
-
+    
     @Override
     public boolean isLongRunning() {        
         return asynchronousMode;
     }
-
+    
 }
