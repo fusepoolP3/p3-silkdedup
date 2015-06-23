@@ -25,10 +25,12 @@ public class DuplicatesTransformerFactory implements TransformerFactory {
     @Override
     public DuplicatesTransformer getTransformer(HttpServletRequest request) {
         final String silkConfigUri = request.getParameter("config");
-        if ( "true".equals( request.getParameter("asynchronous") ) ) {
+        String async = request.getParameter("asynchronous");
+        System.out.println("Factory transformer async: " + async);
+        if ( "true".equals( async ) ) {
         	asynchronous = true;
         }
-        System.out.println("Factory transformer async: " + asynchronous);
+        
         return getTransfomerFor(silkConfigUri);
     }
 
