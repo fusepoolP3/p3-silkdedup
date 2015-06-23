@@ -72,8 +72,9 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     	InputStream configIn = null;
     	
     	String configUri = entity.getRequest().getParameter("config");	
-    	if(configUri != null) {
-    	  System.out.println("Config Uri: " + configUri);
+    	System.out.println("Config file URI: " + configUri);
+    	System.out.println("Async: " + entity.getRequest().getParameter("asynchronous"));
+    	if(configUri != null) {    	  
     	  configIn = getRemoteConfigFile(configUri);
     	}
     	
@@ -139,10 +140,9 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
         resultGraph.addAll(equivalences);
         
         // remove all temporary files
-        //configFile.delete();
-        //rdfFile.delete();
-        //ntFile.delete();
-        //outFile.delete();
+        configFile.delete();        
+        ntFile.delete();
+        outFile.delete();
 
         // returns the result to the client
         return resultGraph;
@@ -165,7 +165,7 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     
     @Override
     public boolean isLongRunning() {        
-        return asynchronousMode;
+        return false;
     }
     
 }
