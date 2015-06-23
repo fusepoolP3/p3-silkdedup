@@ -28,6 +28,7 @@ public class DuplicatesTransformerFactory implements TransformerFactory {
         if ( "true".equals( request.getParameter("asynchronous") ) ) {
         	asynchronous = true;
         }
+        System.out.println("Factory transformer async: " + asynchronous);
         return getTransfomerFor(silkConfigUri);
     }
 
