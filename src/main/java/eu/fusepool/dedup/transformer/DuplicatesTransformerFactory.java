@@ -42,17 +42,17 @@ public class DuplicatesTransformerFactory implements TransformerFactory {
         if ( ! "".equals(asyncValue) ) {
         	asynchronous = Boolean.getBoolean(asyncValue);
         }
-        return getTransfomerFor(silkConfigUri);
+        return getTransfomerFor(request.getQueryString());
     }
 
-    private synchronized Transformer getTransfomerFor(String silkConfigUri) {
-        if (duplicatesTransformerList.containsKey( silkConfigUri )) {
-            return duplicatesTransformerList.get( silkConfigUri );
+    private synchronized Transformer getTransfomerFor(String queryString) {
+        if (duplicatesTransformerList.containsKey( queryString )) {
+            return duplicatesTransformerList.get( queryString );
         }
         
         final Transformer newTransformer = new DuplicatesTransformer(asynchronous);
         
-        duplicatesTransformerList.put(silkConfigUri, newTransformer);
+        duplicatesTransformerList.put(queryString, newTransformer);
         return newTransformer;
     }
     /**
