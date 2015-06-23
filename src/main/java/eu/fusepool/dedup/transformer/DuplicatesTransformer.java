@@ -139,10 +139,10 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
         resultGraph.addAll(equivalences);
         
         // remove all temporary files
-        configFile.delete();
+        //configFile.delete();
         //rdfFile.delete();
-        ntFile.delete();
-        outFile.delete();
+        //ntFile.delete();
+        //outFile.delete();
 
         // returns the result to the client
         return resultGraph;
