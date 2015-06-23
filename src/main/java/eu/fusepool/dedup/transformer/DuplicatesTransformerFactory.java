@@ -18,13 +18,16 @@ import javax.servlet.http.HttpServletRequest;
  * @author reto
  */
 public class DuplicatesTransformerFactory implements TransformerFactory {
-
+	private boolean asynchronous = false; //set the transformer execution mode to asynchronous when set to true
     private final Map<String, Transformer> duplicatesTransformerList = 
             new HashMap<>();
     
     @Override
     public Transformer getTransformer(HttpServletRequest request) {
         final String silkConfigUri = request.getParameter("config");
+        if ( "true".equals( request.getParameter("asynchronous") ) ) {
+        	asynchronous = true;
+        }
         return getTransfomerFor(silkConfigUri);
     }
 
@@ -32,7 +35,8 @@ public class DuplicatesTransformerFactory implements TransformerFactory {
         if (duplicatesTransformerList.containsKey( silkConfigUri )) {
             return duplicatesTransformerList.get( silkConfigUri );
         }
-        final Transformer newTransformer = new DuplicatesTransformer();
+        final Transformer newTransformer = new DuplicatesTransformer(asynchronous);
+        
         duplicatesTransformerList.put(silkConfigUri, newTransformer);
         return newTransformer;
     }

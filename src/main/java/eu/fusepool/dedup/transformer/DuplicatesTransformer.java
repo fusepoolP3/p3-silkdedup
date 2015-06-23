@@ -36,10 +36,15 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     final String BASE_URI = "http://example.org/";
     final String TURTLE_MIME_TYPE = "text/turtle";
     final String RDF_MIME_TYPE = "application/rdf+xml";
+    boolean asynchronousMode = false;
 
     private static final Logger log = LoggerFactory.getLogger(DuplicatesTransformer.class);
-
+    
     public DuplicatesTransformer() {
+    }
+
+    public DuplicatesTransformer(boolean asynch) {
+    	asynchronousMode = asynch;
     }
 
     @Override
@@ -154,9 +159,8 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
 
 
     @Override
-    public boolean isLongRunning() {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean isLongRunning() {        
+        return asynchronousMode;
     }
 
 }
