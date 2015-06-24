@@ -37,7 +37,7 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     final String BASE_URI = "http://example.org/";
     final String TURTLE_MIME_TYPE = "text/turtle";
     final String RDF_MIME_TYPE = "application/rdf+xml";
-    boolean asynchronous = false;
+    boolean asynchronous;
 
     private static final Logger log = LoggerFactory.getLogger(DuplicatesTransformer.class);
     
