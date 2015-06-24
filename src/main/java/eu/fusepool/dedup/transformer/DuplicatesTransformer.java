@@ -37,7 +37,7 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     final String BASE_URI = "http://example.org/";
     final String TURTLE_MIME_TYPE = "text/turtle";
     final String RDF_MIME_TYPE = "application/rdf+xml";
-    boolean asynchronous;
+    boolean asynchronous = false;
 
     private static final Logger log = LoggerFactory.getLogger(DuplicatesTransformer.class);
     
@@ -69,7 +69,12 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     	String queryString = entity.getRequest().getQueryString();
     	log.info("Query string: " + queryString);
     	//String configUri = getRequestParamValue(queryString, "config");	
-    	String configUri = entity.getRequest().getParameter("config");    	
+    	String configUri = entity.getRequest().getParameter("config");  
+    	String async = entity.getRequest().getParameter("async");
+    	if ("true".equals(async)) {
+    		System.out.println("Transformer: async = true");
+    		asynchronous = true;
+    	}
     	log.info("Config file URI: " + configUri);
     	//log.info("Async: " + entity.getRequest().getParameter("asynchronous"));
     	if(configUri != null) {    	  
