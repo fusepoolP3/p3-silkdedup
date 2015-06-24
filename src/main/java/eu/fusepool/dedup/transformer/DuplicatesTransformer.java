@@ -161,8 +161,9 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     }
     
     @Override
-    public boolean isLongRunning() {        
-        return true;
+    public boolean isLongRunning() { 
+    	System.out.println("isLongRunning() -> " + asynchronous);
+        return asynchronous;
     }
     
 }
