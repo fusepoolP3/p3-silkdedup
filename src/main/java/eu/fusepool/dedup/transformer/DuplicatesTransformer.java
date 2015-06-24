@@ -63,16 +63,14 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
 
     @Override
     protected TripleCollection generateRdf(HttpRequestEntity entity) throws IOException {
-    	String rdfDataFormat = SupportedFormat.TURTLE;//entity.getType().getBaseType();
-    	//String requestUri = entity.getRequest().getRequestURI();    	
+    	String rdfDataFormat = SupportedFormat.TURTLE;    	    	
     	InputStream configIn = null;
     	String queryString = entity.getRequest().getQueryString();
     	log.info("Query string: " + queryString);
     	//String configUri = getRequestParamValue(queryString, "config");	
-    	String configUri = entity.getRequest().getParameter("config");  
-    	
+    	String configUri = entity.getRequest().getParameter("config");      	
     	log.info("Config file URI: " + configUri);
-    	//log.info("Async: " + entity.getRequest().getParameter("asynchronous"));
+    	
     	if(configUri != null) {    	  
     	  configIn = getRemoteConfigFile(configUri);
     	}
@@ -163,7 +161,7 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     
     @Override
     public boolean isLongRunning() { 
-    	System.out.println("isLongRunning() -> " + asynchronous);
+    	log.info("isLongRunning() -> " + asynchronous);
         return asynchronous;
     }
     

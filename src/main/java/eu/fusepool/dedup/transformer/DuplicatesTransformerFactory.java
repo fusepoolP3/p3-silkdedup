@@ -31,7 +31,9 @@ public class DuplicatesTransformerFactory implements TransformerFactory {
 	
 	private static final Logger log = LoggerFactory.getLogger(DuplicatesTransformerFactory.class);
 	
-	private boolean asynchronous = false; //set the transformer execution mode to asynchronous when set to true
+	//set the transformer execution mode to asynchronous when set to true
+	private boolean asynchronous = false; 
+	
     private final Map<String, Transformer> duplicatesTransformerList = 
             new HashMap<>();
     
