@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLDecoder;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -63,13 +64,14 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     @Override
     protected TripleCollection generateRdf(HttpRequestEntity entity) throws IOException {
     	String rdfDataFormat = SupportedFormat.TURTLE;//entity.getType().getBaseType();
-    	String requestUri = entity.getRequest().getRequestURI();
-    	log.info("Request URI: " + requestUri);
+    	//String requestUri = entity.getRequest().getRequestURI();    	
     	InputStream configIn = null;
-    	
-    	String configUri = entity.getRequest().getParameter("config");	
+    	String queryString = entity.getRequest().getQueryString();
+    	log.info("Query string: " + queryString);
+    	//String configUri = getRequestParamValue(queryString, "config");	
+    	String configUri = entity.getRequest().getParameter("config");    	
     	log.info("Config file URI: " + configUri);
-    	log.info("Async: " + entity.getRequest().getParameter("asynchronous"));
+    	//log.info("Async: " + entity.getRequest().getParameter("asynchronous"));
     	if(configUri != null) {    	  
     	  configIn = getRemoteConfigFile(configUri);
     	}
@@ -157,11 +159,10 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
         Parser parser = Parser.getInstance();
         return parser.parse(new FileInputStream(file), SupportedFormat.N_TRIPLE);
     }
-
     
     @Override
     public boolean isLongRunning() {        
-        return false;
+        return asynchronous;
     }
     
 }
