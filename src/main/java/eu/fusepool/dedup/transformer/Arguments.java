@@ -31,5 +31,10 @@ public interface Arguments extends ArgumentsWithHelp {
             description = "The port on which the transformer shall listen")
     public int getPort();
     
+    @CommandLine(longName = "async", shortName = {"A"}, required = false,
+            defaultValue = "false",
+            description = "Change the execution mode of the transformer from synchronous (default) to asynchronous.")
+    public boolean getAsync();
+    
     
 }

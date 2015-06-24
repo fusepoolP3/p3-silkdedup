@@ -35,7 +35,9 @@ public class Main {
         TransformerServer server = new TransformerServer(arguments.getPort());
         //InputStream in = Main.class.getResourceAsStream("bla.txt");
         
-        server.start(new DuplicatesTransformer());
+        DuplicatesTransformer transformer = new DuplicatesTransformer(arguments.getAsync()); 
+        
+        server.start(transformer);
        
         server.join();
     }

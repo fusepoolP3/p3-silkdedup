@@ -70,11 +70,7 @@ public class DuplicatesTransformer extends RdfGeneratingTransformer {
     	log.info("Query string: " + queryString);
     	//String configUri = getRequestParamValue(queryString, "config");	
     	String configUri = entity.getRequest().getParameter("config");  
-    	String async = entity.getRequest().getParameter("async");
-    	if ("true".equals(async)) {
-    		System.out.println("Transformer: async = true");
-    		asynchronous = true;
-    	}
+    	
     	log.info("Config file URI: " + configUri);
     	//log.info("Async: " + entity.getRequest().getParameter("asynchronous"));
     	if(configUri != null) {    	  
