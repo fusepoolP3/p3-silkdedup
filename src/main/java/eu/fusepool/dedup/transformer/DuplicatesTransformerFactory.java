@@ -40,10 +40,10 @@ public class DuplicatesTransformerFactory implements TransformerFactory {
         //final String silkConfigUri = getRequestParamValue(request.getQueryString(), SILK_CONFIG_FILE_URI_PARAM);
     	final String silkConfigUri = request.getParameter(SILK_CONFIG_FILE_URI_PARAM);
     	final String asyncValue = request.getParameter(TRANSFORMER_ASYNC_PARAM);
-    	log.info("factory async value: " + Boolean.getBoolean(asyncValue));
+    	log.info("factory async value: " + asyncValue);
         //final String asyncValue = getRequestParamValue(request.getQueryString(), TRANSFORMER_ASYNC_PARAM);
         if ( "true".equals(asyncValue) ) {
-        	asynchronous = Boolean.getBoolean(asyncValue);
+        	asynchronous = true;
         }
         return getTransfomerFor(silkConfigUri);
     }
