@@ -86,7 +86,7 @@ The result of the interlinking process, a set of owl:sameAs statements is added 
               <http://xmlns.com/foaf/0.1/givenName> "Barack" .
 
               
-A transformer responds synchronously by default to a request. The client can change the execution mode of a new transformer instance sending an additional parameter "async=true" to the post request. The previous command would be
+A transformer responds synchronously by default to a request. The client can change the execution mode of a new transformer instance to asynchronous sending an additional parameter "async=true" with the post request. The previous command would be
 
     curl -i -X POST -H "Content-Type: text/turtle" -d @testfoaf.ttl "http://localhost:7100/?config=file:///home/user/silk-config-file.xml&async=true"
     
