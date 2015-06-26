@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>eu.fusepoolp3</groupId>
     <artifactId>p3-silkdedup</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <name>Fusepool P3 Deduplication</name>
     <packaging>jar</packaging>
     <description>
