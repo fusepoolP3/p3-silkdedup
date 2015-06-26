@@ -10,11 +10,11 @@ The interlinking and deduplication tasks are based on a set of rules written in 
 ## Try it out
 The transformer can be started using the latest release that can be downloaded from the releases section. The executable jar file contains all the necessary dependencies. To start an instance of the transformer factory run the command
 
-      java -jar p3-silkdedup-v1.0.0-20150505-jar-with-dependencies.jar
+      java -jar p3-silkdedup-v1.0.0-jar-with-dependencies.jar
     
 An instance of the SilkDedup transformer factory will be listening at the default port 8306. The port number can be changed, for example to use port number 7100, as follows
 
-     java -jar p3-silkdedup-v1.0.0-20150505-jar-with-dependencies.jar -P 7100
+     java -jar p3-silkdedup-v1.0.0-jar-with-dependencies.jar -P 7100
      
 ## Compiling and Running 
 Compile the Maven project using the command
@@ -70,9 +70,9 @@ Jaro-Winkler is the similarity measure used in the example to compare the proper
 
 To test the application open a new shell, copy the files testfoaf.ttl and silk-config-file in src/test/resources/eu/fusepool/dedup/transformer to a local folder (e.g. /home/user/ ) and run a command like the following
 
-    curl -X POST -H "Content-Type: text/turtle" -T testfoaf.ttl http://localhost:7100/?config=file:///home/user/silk-config-file.xml
+    curl -X POST -H "Content-Type: text/turtle" -d @testfoaf.ttl "http://localhost:7100/?config=file:///home/user/silk-config-file.xml"
 
-If the SILK configuration file can be put in a web server just use its http url in place of the file url. The same example SILK configuration file is available on the Github repository at the URL
+The factory will look whether a request with the same URL has been already submitted and a transformer is already available to handle it. In case it is a new request the factory will create a new instance of the transformer. If the SILK configuration file can be put in a web server just use its http url in place of the file url. The same example SILK configuration file is available on the Github repository at the URL
 
 https://raw.githubusercontent.com/fusepoolP3/p3-silkdedup/master/src/main/resources/eu/fusepool/dedup/transformer/silk-config-file.xml
 
@@ -84,3 +84,21 @@ The result of the interlinking process, a set of owl:sameAs statements is added 
                       <http://www.whitehouse.gov/Barack_Obama> , <http://dbpedia.org/Barack_Obama> , <http://example.org/Obama> ;
               <http://xmlns.com/foaf/0.1/familyName> "Obama" ;
               <http://xmlns.com/foaf/0.1/givenName> "Barack" .
+
+              
+A transformer responds synchronously by default to a request. The client can change the execution mode of a new transformer instance sending an additional parameter "async=true" to the post request. The previous command would be
+
+    curl -i -X POST -H "Content-Type: text/turtle" -d @testfoaf.ttl "http://localhost:7100/?config=file:///home/user/silk-config-file.xml&async=true"
+    
+The server will send a message to the client with a "Location" header with the relative path of the resource that will be created as a result 
+
+    HTTP/1.1 202 Accepted
+    Date: Fri, 26 Jun 2015 14:59:09 GMT
+    Location: /job/fbf1082c-1b2d-4df5-96e6-332dce8b4b6c
+    Transfer-Encoding: chunked
+    Server: Jetty(9.2.z-SNAPSHOT)
+
+The resource created by the transformer will be available at the URL http://localhost:7100/job/fbf1082c-1b2d-4df5-96e6-332dce8b4b6c
+
+    curl http://localhost:7100/job/fbf1082c-1b2d-4df5-96e6-332dce8b4b6c
+              
